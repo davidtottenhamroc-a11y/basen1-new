@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Procedimentos - Troca de Placa</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        header h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 24px;
+        }
+        header p {
+            margin: 5px 0 0;
+            color: #555;
+            font-size: 16px;
+        }
+        .scenario-selection {
+            background-color: #f7f9fc;
+            border: 1px solid #e1e6ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .scenario-selection h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .scenario-button {
+            padding: 14px 25px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin: 0 10px;
+        }
+        .scenario-button:hover {
+            background: linear-gradient(135deg, #0069d9, #004da3);
+        }
+        .scenario-button:active {
+            transform: scale(0.99);
+        }
+        #result-area {
+            display: none; /* Inicia oculto */
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .result-title {
+            margin: 0 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 20px;
+            color: #004085;
+        }
+        .step-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .step-item {
+            background-color: #f7f9fc;
+            border: 1px solid #e1e6ec;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .step-item h4 {
+            margin: 0 0 5px;
+            color: #0056b3;
+            font-size: 18px;
+        }
+        .step-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .step-item ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Guia de Procedimentos - Troca de Placa</h1>
+            <p>Selecione um cenário abaixo para visualizar o guia passo a passo do procedimento.</p>
+        </header>
+
+        <div class="scenario-selection">
+            <h3>Selecione o Cenário Desejado</h3>
+            <button class="scenario-button" onclick="showProcedure('unificado')">Troca de Placa do Coletor</button>
+            <button class="scenario-button" onclick="showProcedure('cnpj')">Troca de Placa entre CNPJ</button>
+        </div>
+
+        <div id="result-area">
+            <h3 class="result-title">Guia Passo a Passo: <span id="procedure-name"></span></h3>
+            <ul class="step-list" id="procedure-content">
+                </ul>
+        </div>
+    </div>
+
+    <script>
+        function showProcedure(scenario) {
+            const resultArea = document.getElementById('result-area');
+            const procedureName = document.getElementById('procedure-name');
+            const procedureContent = document.getElementById('procedure-content');
+            
+            resultArea.style.display = 'block';
+            procedureContent.innerHTML = '';
+
+            if (scenario === 'unificado') {
+                procedureName.textContent = 'Troca de Placa em Aparelho Unificado';
+                procedureContent.innerHTML = `
+                    <li class="step-item">
+                        <h4>1. Acesso ao Painel SuperPrático</h4>
+                        <p>No painel SuperPrático, acesse o <strong>Módulo Prático</strong> e selecione a opção <strong>Coletor</strong>. Localize a placa a ser trocada usando os campos <strong>Veículo</strong> ou <strong>Serial</strong>.</p>
+                    </li>
+                    <li class="step-item">
+                        <h4>2. Limpeza de Dados (se a placa estiver em uso ou associada)</h4>
+                        <p>Se a placa que será utilizada para a troca estiver em uso, realize os seguintes passos no aparelho:</p>
+                        <ul>
+                            <li><strong>Desabilitar Knox:</strong> Nas configurações de segurança do aparelho, desmarque a flag do SuperPrático Knox.</li>
+                            <li><strong>Encerrar Parada:</strong> Em Aplicativos, localize o SuperPrático Módulo Coletor e clique em Forçar Parada.</li>
+                            <li><strong>Gerar Nova Base:</strong> Deverá renomear a base para Database(Data da Troca).</li>
+                            <li><strong>Limpeza de Dados:</strong> Em Armazenamento, clique em Limpar dados para evitar erros futuros.</li>
+                        </ul>
+                    </li>
+                    <li class="step-item">
+                        <h4>3. Inserção das Novas Informações</h4>
+                        <p>Somente após a limpeza de dados, retorne à tela do SuperPrático, no cadastro do coletor, e clique em <strong>Editar</strong>.</p>
+                    </li>
+                    <li class="step-item">
+                        <h4>4. Seleção e Ativação da Nova Placa</h4>
+                        <p>Selecione a nova placa, ative a flag <strong>Ativo</strong> e clique em <strong>Salvar e fechar</strong>. Adicione o número do ticket/chamado na descrição.</p>
+                    </li>
+                `;
+            } else if (scenario === 'cnpj') {
+                procedureName.textContent = 'Troca de Placa entre CNPJ';
+                procedureContent.innerHTML = `
+                    <li class="step-item">
+                        <h4>1. Procedimento Inicial</h4>
+                        <p>Realize o mesmo procedimento do primeiro passo da Troca de Placa em Aparelho Unificado: acesse o painel SuperPrático e localize a placa que terá o CNPJ alterado.</p>
+                    </li>
+                    <li class="step-item">
+                        <h4>2. Alteração do CNPJ</h4>
+                        <p>No campo <strong>CENTRO DE FORMAÇÃO</strong>, clique na lupa para pesquisar e selecionar o novo CFC pelo nome ou CNPJ. Clique em <strong>Ok</strong> e adicione o número do ticket/chamado na descrição.</p>
+                    </li>
+                    <li class="step-item">
+                        <h4>3. Sincronização do Aparelho Coletor Unificado</h4>
+                        <p>Abra o aplicativo no aparelho unificado. A nova placa será sincronizada automaticamente. Verifique se a alteração foi aplicada corretamente e aguarde até que o aparelho esteja disponível para a execução de aulas.</p>
+                    </li>
+                `;
+            }
+        }
+    </script>
+
+</body>
+</html>

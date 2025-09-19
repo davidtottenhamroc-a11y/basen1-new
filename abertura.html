@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxograma Técnico - Abertura de Aula</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .flowchart-container {
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step {
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .step:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .step.highlighted {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .step.active-path {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .step.inactive-path {
+            opacity: 0.3;
+        }
+
+
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 30px;
+            height: 30px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        .step-title .error-code {
+            font-weight: normal;
+            font-size: 0.8em;
+            color: #dc3545;
+            float: right;
+        }
+
+        .step-content {
+            font-size: 13px;
+            color: #34495e;
+        }
+        
+        .step-content strong {
+            color: #2c3e50;
+        }
+
+        .step-content ul {
+            padding-left: 15px;
+            margin-top: 5px;
+        }
+
+        .step-content li {
+            margin-bottom: 5px;
+        }
+
+        .precondition { background: #d4edff; border-left: 5px solid #3498db; }
+        .check { background: #fff3cd; border-left: 5px solid #ffc107; }
+        .data { background: #d1ecf1; border-left: 5px solid #17a2b8; }
+        .sensor { background: #d1f7c4; border-left: 5px solid #28a745; }
+        .preparation { background: #e8d7f1; border-left: 5px solid #6f42c1; }
+        .final { background: #cce7ff; border-left: 5px solid #0056b3; }
+        .success { background: #d4edda; border-left: 5px solid #28a745; }
+        .error { background: #f8d7da; border-left: 5px solid #dc3545; }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 50px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .tech-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .tech-details h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .detail-item.error-detail {
+            border-left: 4px solid #dc3545;
+        }
+
+        .detail-item h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .detail-item p {
+            color: #34495e;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 1200px) {
+            .flowchart {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .flowchart {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.05); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fluxograma Técnico - Processo de Abertura de Aula</h1>
+            <p class="description">Detalhamento completo com todos os passos técnicos e verificações do sistema, incluindo simulações de erro.</p>
+        </header>
+
+        <div class="flowchart-container">
+            <div class="flowchart">
+                <div class="column">
+                    <div id="step-1" class="step precondition">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Início e Pré-condições</div>
+                        <div class="step-content">
+                            <p>O processo inicia com uma solicitação de abertura de aula. O sistema verifica as condições básicas do dispositivo e do aplicativo.</p>
+                            <ul>
+                                <li><strong>Coletor Operacional:</strong> Dispositivo ligado e Coletor em primeiro plano. </li>
+                                <li><strong>Dados Locais:</strong> Banco de dados com informações atualizadas. </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-2" class="step check">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Checagens de Ambiente e Conectividade</div>
+                        <div class="step-content">
+                            <p>O sistema valida a integridade do ambiente antes de prosseguir. </p>
+                            <ul>
+                                <li><strong>App em Primeiro Plano:</strong> Garante que o aplicativo está visível e ativo. </li>
+                                <li><strong>Status de Inatividade:</strong> Checa se o Coletor e o CFC estão ativos no sistema central. </li>
+                                <li><strong>Aulas em Andamento:</strong> Confirma que não há outra aula em execução no dispositivo. </li>
+                                <li><strong>Conectividade:</strong> Verifica a comunicação com o servidor. </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-3" class="step data">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Verificação de Identidade e Dados Locais</div>
+                        <div class="step-content">
+                            <p>Valida a existência e o status do instrutor e do candidato no banco de dados local. </p>
+                            <ul>
+                                <li><strong>Existência do Candidato:</strong> Confirma se o CPF do aluno é válido e ativo. </li>
+                                <li><strong>Existência do Instrutor:</strong> Confirma se o CPF do instrutor é válido e ativo. </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div id="step-4" class="step error">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Falha na Identificação <span class="error-code">(Erro 060)</span></div>
+                        <div class="step-content">
+                            <p>Ocorre quando há inconsistências nos dados do instrutor ou do aluno. </p>
+                            <ul>
+                                <li><strong>CPF Inválido:</strong> CPF do instrutor ou aluno não corresponde a um cadastro válido. </li>
+                                <li><strong>Status Inativo:</strong> Instrutor com licença vencida ou aluno com matrícula expirada. </li>
+                                <li><strong>Categoria Incompatível:</strong> Aluno ou veículo não compatível com a aula.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-5" class="step data">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Validação Biométricas</div>
+                        <div class="step-content">
+                            <p>O sistema checa se as validações biométricas (candidato/instrutor) não expiraram. </p>
+                            <ul>
+                                <li><strong>Validações Expiradas:</strong> Se a biometria foi feita há mais de 10 minutos, o sistema solicita uma nova. </li>
+                               <li><strong>Consistência Facial:</strong> A face capturada deve corresponder ao cadastro. </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-6" class="step error">
+                        <div class="step-number">6</div>
+                        <div class="step-title">Falha de Biometria</div>
+                        <div class="step-content">
+                            <p>Ocorre por problemas na captura ou análise da imagem facial. </p>
+                            <ul>
+                                <li><strong>Câmera:</strong> Problema técnico na câmera ou má iluminação. </li>
+                                <li><strong>API:</strong> Falha no serviço de reconhecimento facial (Erro 500). </li>
+                                <li><strong>Fraude:</strong> Tentativa de usar a mesma pessoa para aluno e instrutor. </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div id="step-7" class="step sensor">
+                        <div class="step-number">7</div>
+                        <div class="step-title">Validação de Sensores e Veículo</div>
+                        <div class="step-content">
+                            <p>Garante que os sensores estão funcionando e que os dados do veículo são válidos.</p>
+                            <ul>
+                                <li><strong>Funcionamento de Sensores:</strong> Confirma que GPS e Câmera estão operacionais.</li>
+                                <li><strong>Dados do Veículo:</strong> Verifica se a placa é válida e se o veículo não está indisponível. </li>
+                                <li><strong>Quilometragem:</strong> Confere se a quilometragem inicial é maior que a final da última aula.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-8" class="step sensor">
+                        <div class="step-number">8</div>
+                        <div class="step-title">Captura e Cerca Geográfica</div>
+                        <div class="step-content">
+                            <p>É obrigatório obter uma coordenada GPS inicial válida e checar se está dentro da área permitida.</p>
+                            <ul>
+                                <li><strong>Primeira Localização (HasFirstLocation):</strong> Tenta capturar uma coordenada GPS inicial. </li>
+                                <li><strong>Cerca Geográfica:</strong> Confere se a localização está dentro da área do CFC. </li>
+                                <li><strong>Contingência:</strong> Após 4 falhas de GPS, a aula pode ser iniciada com um log de exceção. </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-9" class="step error">
+                        <div class="step-number">9</div>
+                        <div class="step-title">Falha de Agendamento e Regras de Negócio</div>
+                        <div class="step-content">
+                            <p>Ocorre quando a aula viola regras pré-definidas. </p>
+                            <ul>
+                                <li><strong>Horário:</strong> Iniciar fora do horário permitido pelo DETRAN. </li>
+                                <li><strong>Sobreposição:</strong> Aula se sobrepondo a outro agendamento. </li>
+                                <li><strong>Limite de Aulas:</strong> Aluno ou instrutor excedeu o limite diário/semanal.</li>
+                                <li><strong>Descanso:</strong> Não cumpriu o tempo de descanso mínimo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div id="step-10" class="step preparation">
+                        <div class="step-number">10</div>
+                        <div class="step-title">Preparação e Carregamento</div>
+                        <div class="step-content">
+                            <p>Após todas as validações, o plano de aula é carregado e preparado.</p>
+                            <ul>
+                                <li><strong>Requisitos do Plano:</strong> Checa se o plano está em estado válido (aprovado).</li>
+                                <li><strong>Carregamento:</strong> Conteúdo e configurações são carregados para a memória.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="step-11" class="step final">
+                        <div class="step-number">11</div>
+                        <div class="step-title">Ações Finais</div>
+                        <div class="step-content">
+                            <p>Início de ações cruciais como gravação e envio de dados online. </p>
+                            <ul>
+                                <li><strong>Requisição Online:</strong> Se for aula "Online", envia requisição ao sistema central.</li>
+                                <li><strong>Gravação de Imagens:</strong> Ativa a gravação da aula. </li>
+                                <li><strong>Agendamento de Validações:</strong> Agenda pontos de biometria aleatória para categorias A/ACC. </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="step-12" class="step success">
+                        <div class="step-number">12</div>
+                        <div class="step-title">Finalização com Sucesso</div>
+                        <div class="step-content">
+                            <p>O processo é concluído. O sistema salva os dados e notifica o usuário. </p>
+                            <ul>
+                                <li><strong>Exibir Mensagem:</strong> Confirma que a aula foi iniciada com sucesso.</li>
+                                <li><strong>Salvar Aula:</strong> Os dados da aula são salvos na base local para acesso rápido.</li>
+                                <li><strong>Gerar Log:</strong> O modelo do Coletor e o status de sucesso são logados para auditoria. </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="simulateProcess()">Simular Processo Completo</button>
+            <button onclick="simulateSuccess()">Simular Rota de Sucesso</button>
+            <button onclick="simulateDataError()">Simular Erro de Identificação (060)</button>
+            <button onclick="simulateBiometryError()">Simular Falha de Biometria</button>
+            <button onclick="simulateGPSFailure()">Simular Falha de GPS/Geofencing</button>
+            <button onclick="simulateSchedulingError()">Simular Erro de Agendamento</button>
+            <button onclick="resetSimulation()">Reiniciar Simulação</button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background-color: #d4edff;"></div><span>Pré-condições</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #fff3cd;"></div><span>Checagens</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #f8d7da;"></div><span>Erros</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #d1ecf1;"></div><span>Dados</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #d1f7c4;"></div><span>Sensores</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #e8d7f1;"></div><span>Preparação</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #cce7ff;"></div><span>Ações Finais</span></div>
+            <div class="legend-item"><div class="legend-color" style="background-color: #d4edda;"></div><span>Sucesso</span></div>
+        </div>
+    </div>
+
+    <script>
+        const steps = document.querySelectorAll('.step');
+
+        function resetSimulation() {
+            steps.forEach(step => {
+                step.classList.remove('active-path', 'inactive-path', 'highlighted');
+                step.style.animation = "none";
+            });
+        }
+        
+        function highlightSteps(path) {
+            resetSimulation();
+            steps.forEach(step => {
+                const stepNumber = parseInt(step.id.split('-')[1]);
+                if (path.includes(stepNumber)) {
+                    step.classList.add('active-path');
+                } else {
+                    step.classList.add('inactive-path');
+                }
+            });
+        }
+
+        function simulateProcess() {
+            resetSimulation();
+            const delay = 500;
+            const fullPath = [1, 2, 3, 5, 7, 8, 10, 11, 12];
+            
+            fullPath.forEach((stepNumber, index) => {
+                const step = document.getElementById(`step-${stepNumber}`);
+                if (step) {
+                    setTimeout(() => {
+                        step.classList.add('highlighted');
+                        if (index > 0) {
+                            const prevStep = document.getElementById(`step-${fullPath[index - 1]}`);
+                            prevStep.classList.remove('highlighted');
+                            prevStep.classList.add('active-path');
+                        }
+                        if (index === fullPath.length - 1) {
+                            step.style.animation = "pulse 1.5s infinite";
+                        }
+                    }, delay * index);
+                }
+            });
+        }
+        
+        function simulateSuccess() {
+            const successPath = [1, 2, 3, 5, 7, 8, 10, 11, 12];
+            highlightSteps(successPath);
+            document.getElementById('step-12').style.animation = "pulse 1.5s infinite";
+        }
+
+        function simulateDataError() {
+            const errorPath = [1, 2, 3, 4];
+            highlightSteps(errorPath);
+            document.getElementById('step-4').style.animation = "pulse 1.5s infinite";
+        }
+
+        function simulateBiometryError() {
+            const errorPath = [1, 2, 3, 5, 6];
+            highlightSteps(errorPath);
+            document.getElementById('step-6').style.animation = "pulse 1.5s infinite";
+        }
+        
+        function simulateGPSFailure() {
+            const errorPath = [1, 2, 3, 5, 7, 8];
+            highlightSteps(errorPath);
+            document.getElementById('step-8').style.animation = "pulse 1.5s infinite";
+        }
+        
+        function simulateSchedulingError() {
+            const errorPath = [1, 2, 3, 5, 7, 9];
+            highlightSteps(errorPath);
+            document.getElementById('step-9').style.animation = "pulse 1.5s infinite";
+        }
+    </script>
+</body>
+</html>

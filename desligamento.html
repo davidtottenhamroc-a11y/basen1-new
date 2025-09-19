@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Análise de Desligamento de Aulas - RN</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        header h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 24px;
+        }
+        header p {
+            margin: 5px 0 0;
+            color: #555;
+            font-size: 16px;
+        }
+        .simulation-form {
+            background-color: #f7f9fc;
+            border: 1px solid #e1e6ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #0069d9, #004da3);
+        }
+        button:active {
+            transform: scale(0.99);
+        }
+        #resultado-analise {
+            background-color: #ffffff;
+            border: 1px solid #e1e6ec;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+        }
+        .result-title {
+            margin: 0 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 20px;
+        }
+        .result-title.success { color: #28a745; }
+        .result-title.warning { color: #f0ad4e; }
+        .result-title.danger { color: #d9534f; }
+        .result-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #007bff;
+        }
+        .result-section h4 {
+            color: #004085;
+            margin-top: 0;
+        }
+        .code-block {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 4px solid #0056b3;
+            font-size: 14px;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffeeba;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: #d9534f;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Simulador Interativo: Análise de Desligamento de Aulas (RN)</h1>
+            <p>Ferramenta técnica para simular o processo de análise de desligamentos de aulas práticas, com base no alinhamento técnico do estado do RN.</p>
+        </header>
+
+        <div class="simulation-form">
+            <div class="form-group">
+                <label for="minutos-desligamento">Minutos Totais de Desligamento:</label>
+                <input type="number" id="minutos-desligamento" placeholder="Ex: 7" min="0">
+            </div>
+            <div class="form-group">
+                <label for="situacao-especifica">Situação Específica (se aplicável):</label>
+                <select id="situacao-especifica">
+                    <option value="padrao">Análise Padrão / Nenhuma Situação Específica</option>
+                    <option value="sqlexception">Desligamento (5-10 min) com SQLException encontrado nos logs</option>
+                    <option value="um_segmento">Desligamento (>10 min) com impacto em apenas um segmento</option>
+                    <option value="sem_imagens">Desligamento (>10 min) com ausência de imagens(não justificaveis pelo tempo de desligamento)</option>
+                    <option value="dois_segmentos">Desligamento (>10 min) contínuo, afetando os dois segmentos</option>
+                </select>
+            </div>
+            <button onclick="iniciarSimulacao()">Simular Análise de Procedimento</button>
+        </div>
+
+        <div id="resultado-analise">
+            </div>
+    </div>
+
+    <script>
+        function iniciarSimulacao() {
+            const minutosInput = document.getElementById('minutos-desligamento');
+            const minutos = parseInt(minutosInput.value);
+            const situacao = document.getElementById('situacao-especifica').value;
+            const resultadoDiv = document.getElementById('resultado-analise');
+
+            resultadoDiv.style.display = 'block';
+
+            if (isNaN(minutos) || minutos < 0) {
+                resultadoDiv.innerHTML = `<div class="error-message"><strong>Erro de Validação:</strong> Por favor, insira um valor numérico válido para os minutos de desligamento.</div>`;
+                return;
+            }
+
+            // Verificação de divergência entre minutos e situação
+            if (situacao === 'sqlexception' && (minutos <= 5 || minutos > 10)) {
+                resultadoDiv.innerHTML = `<div class="error-message"><strong>Dados Divergentes:</strong> A situação "SQLException (5-10 min)" foi selecionada, mas a minutagem inserida (${minutos} min) está fora desse intervalo. Por favor, ajuste os valores.</div>`;
+                return;
+            }
+
+            if ((situacao === 'um_segmento' || situacao === 'sem_imagens' || situacao === 'dois_segmentos') && minutos <= 10) {
+                resultadoDiv.innerHTML = `<div class="error-message"><strong>Dados Divergentes:</strong> Uma situação de desligamento superior a 10 minutos foi selecionada, mas a minutagem inserida foi de ${minutos} min. Por favor, corrija os dados.</div>`;
+                return;
+            }
+
+             if (situacao === 'padrao' && minutos > 5) {
+                 const isRange5to10 = minutos > 5 && minutos <= 10;
+                 const isRangeOver10 = minutos > 10;
+
+                 if (isRange5to10 || isRangeOver10) {
+                      resultadoDiv.innerHTML = `<div class="error-message"><strong>Atenção:</strong> Para desligamentos de ${minutos} minutos, é recomendado selecionar uma "Situação Específica" para obter um diagnóstico mais preciso.</div>`;
+                      return; // Opcional: pode remover este 'return' se quiser permitir a simulação mesmo assim.
+                 }
+            }
+
+
+            simularAnalise(minutos, situacao, resultadoDiv);
+        }
+
+        function simularAnalise(minutos, situacao, resultadoDiv) {
+            let htmlResult = '';
+
+            if (minutos <= 5) {
+                htmlResult = `
+                    <h3 class="result-title success">✅ Liberação Automática (Tolerância de até 5 minutos)</h3>
+                    <p>Aulas com desligamento de até <strong>5 minutos</strong> são consideradas dentro da tolerância e passíveis de liberação automática.</p>
+                    <strong>Ação Imediata:</strong>
+                    <ul>
+                        <li>Confirmar que não há outros fatores que impeçam a liberação da aula.</li>
+                        <li>Registrar a análise no ticket e proceder com a liberação, conforme procedimento padrão.</li>
+                    </ul>
+                    ${gerarTemplateAlinhamentoTicket('liberacao')}
+                `;
+            } else if (minutos > 5 && minutos <= 10) {
+                htmlResult = `
+                    <h3 class="result-title warning">🟡 Análise Técnica Requerida (Desligamento entre 5 e 10 minutos)</h3>
+                    <p>Para desligamentos nesta faixa, uma análise técnica aprofundada é obrigatória.</p>
+                    <h4>Passos da Análise Técnica:</h4>
+                    <ol>
+                        <li><strong>Consulta Inicial:</strong> Acessar a <strong>aba de eventos do coletor</strong> para identificar os eventos "Shutdown" e "Boot Complete", confirmando o intervalo de tempo.</li>
+                        <li><strong>Verificação de Telemetria:</strong> Acessar a telemetria e verificar o salto temporal registrado.</li>
+                        <li><strong>Análise de Logs:</strong> Coletar a base de dados do coletor e acessar os logs internos (logger) para investigar a causa.</li>
+                    </ol>
+                `;
+                if (situacao === 'sqlexception') {
+                     htmlResult += `
+                        <div class="highlight">
+                            <h4>Análise de Falha Técnica Específica (SQLException):</h4>
+                            <p>Com a confirmação de um erro <strong>SQLException</strong> nos logs, o procedimento é claro:</p>
+                            <ol>
+                                <li>Anexar um <strong>print da ocorrência do erro SQLException</strong> à análise interna do ticket. Este evento justifica a exclusão de imagens pela aplicação.</li>
+                                <li>Com base nesta evidência, a aula é passível de <strong>recuperação ou liberação parcial</strong>.</li>
+                            </ol>
+                        </div>
+                         ${gerarTemplateAlinhamentoTicket('liberacao')}
+                    `;
+                } else {
+                     htmlResult += `
+                        <p><strong>Se nenhuma falha técnica evidente (como SQLException) for encontrada</strong>, a invalidação da aula é o procedimento padrão. Se houver dúvidas, o caso pode ser escalado.</p>
+                         ${gerarTemplateAlinhamentoTicket('analise')}
+                    `;
+                }
+            } else { // minutos > 10
+                 htmlResult = `<h3 class="result-title danger">🚨 Análise Crítica (Desligamento superior a 10 minutos)</h3>`;
+                 switch(situacao) {
+                    case 'um_segmento':
+                        htmlResult += `
+                            <p>Cenário: O impacto do desligamento prolongado afetou <strong>apenas um dos segmentos</strong> da aula, mantendo o outro intacto.</p>
+                            <strong>Ação Mandatória:</strong>
+                            <ul>
+                                <li><strong>Encaminhar o caso ao N2</strong> do estado para uma análise de <strong>segmentação</strong>.</li>
+                                <li>O objetivo é avaliar a viabilidade técnica de <strong>reaproveitar o trecho não afetado</strong> da aula.</li>
+                            </ul>
+                            ${gerarTemplateAlinhamentoTicket('encaminhar_n2')}
+                        `;
+                        break;
+                    case 'sem_imagens':
+                        htmlResult += `
+                             <p>Cenário: O desligamento resultou na <strong>ausência de imagens suficientes</strong> para validar um dos segmentos da aula.</p>
+                            <strong>Ação Mandatória:</strong>
+                            <ul>
+                                <li>Realizar a <strong>coleta completa da base de dados</strong> do coletor.</li>
+                                <li><strong>Encaminhar ao N2</strong> para uma investigação aprofundada de possível falha de hardware ou software no equipamento.</li>
+                            </ul>
+                             ${gerarTemplateAlinhamentoTicket('encaminhar_n2')}
+                        `;
+                        break;
+                    case 'dois_segmentos':
+                         htmlResult += `
+                            <p>Cenário: O evento de desligamento foi contínuo, iniciando na primeira aula e <strong>se estendendo até a segunda, afetando ambos os segmentos</strong>.</p>
+                            <div class="highlight" style="border-left-color: #dc3545; background-color: #f8d7da;">
+                                <strong>Resultado: AULA NÃO PASSÍVEL DE LIBERAÇÃO.</strong>
+                                <p>Esta ocorrência compromete a integridade de todo o registro, <strong>invalidando completamente</strong> os dados coletados para ambas as aulas.</p>
+                            </div>
+                             ${gerarTemplateAlinhamentoTicket('invalidacao')}
+                        `;
+                        break;
+                    default:
+                         htmlResult += `
+                            <p>Desligamentos superiores a 10 minutos têm alto potencial de impacto. <strong>É crucial selecionar uma das situações específicas</strong> no menu acima para obter a orientação correta sobre como proceder, seja para segmentação, investigação de falha ou invalidação total.</p>
+                         `;
+                         break;
+                 }
+            }
+
+            resultadoDiv.innerHTML = htmlResult;
+        }
+
+        function gerarTemplateAlinhamentoTicket(tipo) {
+            let antifraudeScript = `
+                <h4>B. Encaminhamento para Antifraude (Quando Aplicável)</h4>
+                <p>Se a análise técnica concluir que <strong>não houve impacto real</strong> na aula, mas o alerta impede o envio, encaminhe ao setor antifraude usando o script padrão.</p>
+                <div class="code-block">
+                    <strong>Assunto:</strong> Solicitação de Liberação de Alerta – Desligamento de Coletor<br><br>
+                    Bom dia / Boa tarde!<br><br>
+                    <strong>Estado:</strong> RN<br>
+                    <strong>Aula:</strong> [Número da aula]<br>
+                    <strong>Alerta(s):</strong> Detectado desligamento do Coletor durante a aula<br>
+                    <strong>Análise:</strong> Após verificação técnica interna, não foi identificado impacto na gravação ou no conteúdo da aula decorrente do alerta apresentado.<br><br>
+                    Solicitamos, por gentileza, a liberação do alerta para viabilizar o envio da aula ao Detran.
+                </div>
+                <p style="margin-top:10px;"><strong>Classificação no Zendesk:</strong> Utilize a opção "Desligamento de coletor".</p>
+                <p><strong>❗ Lembrete:</strong> A responsabilidade da análise técnica é <strong>exclusiva do agente</strong>. O setor antifraude apenas atua na liberação do alerta.</p>
+            `;
+
+             let n2Script = `
+                <h4>C. Encaminhamento para o N2</h4>
+                <p>Ao encaminhar o ticket para o Nível 2 (N2), é obrigatório seguir estes critérios para garantir agilidade:</p>
+                <ol>
+                    <li>A análise da aula deve estar <strong>preenchida na área interna do ticket</strong> com todas as informações e evidências detalhadas.</li>
+                    <li>Deve ser <strong>anexado o link do Drive com a base de dados completa</strong> coletada do equipamento para subsidiar a análise técnica do N2.</li>
+                </ol>
+            `;
+
+            let template = `
+                <div class="result-section">
+                    <h3>📋 Procedimento de Registro e Encaminhamento</h3>
+                    <h4>A. Registro da Análise Interna</h4>
+                    <p>A análise da aula <strong>deve ser obrigatoriamente registrada</strong> na área de análise interna do ticket, detalhando os seguintes pontos:</p>
+                    <ul>
+                        <li>Houve impacto na gravação da aula? (Sim/Não)</li>
+                        <li>O tempo de desligamento excede a tolerância? (Sim/Não)</li>
+                        <li>Há fragmentação de vídeo ou falhas visíveis? (Sim/Não)</li>
+                        <li>Qual foi a ação final tomada pelo agente (Liberação, Invalidação, Encaminhamento)?</li>
+                        <li>Se a análise envolveu <strong>SQLException</strong>, o print da ocorrência deve ser anexado como evidência.</li>
+                    </ul>
+            `;
+
+            if (tipo === 'liberacao') {
+                template += antifraudeScript;
+            } else if (tipo === 'encaminhar_n2') {
+                template += n2Script;
+            } else if (tipo === 'analise') {
+                template += antifraudeScript + n2Script;
+            } else if (tipo === 'invalidacao') {
+                 template += `<p>Neste caso de invalidação, apenas o registro da Análise Interna é necessário para documentar o motivo.</p>`
+            }
+            
+            template += '</div>';
+            return template;
+        }
+    </script>
+
+</body>
+</html>

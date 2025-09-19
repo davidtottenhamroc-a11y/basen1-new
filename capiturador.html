@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Procedimentos - Capturador Teórico</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 50px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        #result-area {
+            display: none;
+            padding: 20px;
+        }
+
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step {
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 30px;
+            height: 30px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+        }
+
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .step-content {
+            font-size: 13px;
+            color: #34495e;
+        }
+
+        .step-content ul {
+            padding-left: 15px;
+            margin-top: 5px;
+        }
+
+        .step-content li {
+            margin-bottom: 5px;
+        }
+        
+        .step-pre { background: #d4edff; border-left: 5px solid #3498db; }
+        .step-install { background: #d1ecf1; border-left: 5px solid #17a2b8; }
+        .step-config { background: #e8d7f1; border-left: 5px solid #6f42c1; }
+        .step-warning { background: #fff3cd; border-left: 5px solid #ffc107; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Guia de Procedimentos - Instalação do Capturador</h1>
+            <p class="description">Selecione uma etapa para visualizar o guia passo a passo detalhado.</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="showProcedure('pre-instalacao')">1. Verificações Iniciais</button>
+            <button onclick="showProcedure('instalacao')">2. Instalação do Capturador</button>
+            <button onclick="showProcedure('configuracao')">3. Configuração do Capturador</button>
+        </div>
+
+        <div id="result-area">
+            <div id="procedure-content">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        function showProcedure(scenario) {
+            const resultArea = document.getElementById('result-area');
+            const procedureContent = document.getElementById('procedure-content');
+            
+            resultArea.style.display = 'block';
+            procedureContent.innerHTML = '';
+
+            let htmlContent = '';
+
+            if (scenario === 'pre-instalacao') {
+                htmlContent = `
+                    <div class="flowchart">
+                        <div class="column">
+                            <div class="step step-pre">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Funcionamento da Câmera</div>
+                                <div class="step-content">
+                                    <p>Confirmar se a câmera está funcionando na máquina do cliente, acessando suas imagens pelo IP estático (**192.168.00.0**).</p>
+                                    <div class="step step-warning">
+                                        <div class="step-content">
+                                            <strong>Atenção:</strong> Se o CFC usar um IP público, **não prossiga** com a instalação e o cadastro.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="step step-pre">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Acesso à Câmera</div>
+                                <div class="step-content">
+                                    <p>É necessário ter o CNPJ do CFC, login e senha para acesso à câmera.</p>
+                                    <p><strong>Recuperação de Senha:</strong> Se o cliente esqueceu a senha do CamService, acione o N2 para consultar a senha via banco de dados.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (scenario === 'instalacao') {
+                htmlContent = `
+                    <div class="flowchart">
+                        <div class="column">
+                            <div class="step step-install">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Download dos Arquivos</div>
+                                <div class="step-content">
+                                    <p>Faça o download dos arquivos **.Net 6.0** e **Capturador Capturado**.</p>
+                                </div>
+                            </div>
+                            <div class="step step-install">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Instalação do .NET 6.0</div>
+                                <div class="step-content">
+                                    <p>Instale primeiro o **.NET 6.0** e aguarde a conclusão. Clique em "Fechar".</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="step step-install">
+                                <div class="step-number">3</div>
+                                <div class="step-title">Extração e Execução do Setup</div>
+                                <div class="step-content">
+                                    <p>Extraia os arquivos e execute **"Setup Aplicativo"**.</p>
+                                    <div class="step step-warning">
+                                        <div class="step-content">
+                                            <strong>Aviso:</strong> Se o Windows bloquear, clique em "Mais informações" e "Executar assim mesmo".
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step step-install">
+                                <div class="step-number">4</div>
+                                <div class="step-title">Conclusão</div>
+                                <div class="step-content">
+                                    <p>Clique em **"Avançar"** 3 vezes, aguarde e, ao final, clique em "Fechar".</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (scenario === 'configuracao') {
+                htmlContent = `
+                    <div class="flowchart">
+                        <div class="column">
+                            <div class="step step-config">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Acesso ao Arquivo de Configuração</div>
+                                <div class="step-content">
+                                    <p>Acesse o arquivo **"config.json"** no caminho: **C:\\Vsoft\\exame-capturador\\Config**.</p>
+                                </div>
+                            </div>
+                            <div class="step step-config">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Configuração do INSTANCEID</div>
+                                <div class="step-content">
+                                    <p>Adicione o **INSTANCEID** no campo "instanceId" no arquivo e salve.</p>
+                                    <div class="step step-warning">
+                                        <div class="step-content">
+                                            <strong>Onde encontrar?</strong> No painel Gestor do Exame Teórico > Capturador > Instância do Capturador.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="step step-config">
+                                <div class="step-number">3</div>
+                                <div class="step-title">Início dos Serviços</div>
+                                <div class="step-content">
+                                    <p>Na barra de pesquisa do Windows, procure por "Serviços" e inicie **"Capturador-Wsvc"** e **"CaptureService_1"**.</p>
+                                </div>
+                            </div>
+                            <div class="step step-config">
+                                <div class="step-number">4</div>
+                                <div class="step-title">Verificação de Log e Imagens</div>
+                                <div class="step-content">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            procedureContent.innerHTML = htmlContent;
+        }
+    </script>
+</body>
+</html>

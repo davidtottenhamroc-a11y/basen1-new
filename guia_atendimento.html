@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Interativo - Guia de Atendimento ao CFC</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+        }
+        header h1 {
+            color: #0056b3;
+            margin: 0;
+            font-size: 26px;
+        }
+        header p {
+            margin: 8px 0 0;
+            color: #6c757d;
+            font-size: 17px;
+        }
+        .simulation-form {
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 17px;
+            background: linear-gradient(145deg, #28a745, #218838);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background: linear-gradient(145deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #procedimento-resultado {
+            background-color: #ffffff;
+            border-top: 3px solid #17a2b8;
+            padding: 25px;
+            border-radius: 0 0 8px 8px;
+            margin-top: -8px;
+            border: 1px solid #dee2e6;
+            display: none;
+        }
+        .scenario-title {
+            color: #17a2b8;
+            font-size: 22px;
+            margin: 0 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .step {
+            margin-bottom: 18px;
+        }
+        .step h4 {
+            margin: 0 0 8px 0;
+            color: #343a40;
+            font-size: 18px;
+        }
+        .step-content {
+            padding-left: 20px;
+            border-left: 3px solid #007bff;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .step-content ul, .step-content ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .note {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Guia de Atendimento Interativo - Dia a Dia do CFC</h1>
+            <p>Selecione o cenário para visualizar o procedimento técnico correspondente.</p>
+        </header>
+
+        <div class="simulation-form">
+            <div class="form-group">
+                <label for="cenario-atendimento">Selecione a Situação de Atendimento:</label>
+                <select id="cenario-atendimento" onchange="mostrarSubOpcoes()">
+                    <option value="">-- Escolha um cenário --</option>
+                    <optgroup label="Atendimento Diário">
+                        <option value="aluno_sem_credito">Aluno sem crédito (BA)</option>
+                        <option value="liberacao_aula">Liberação de Aula</option>
+                        <option value="verificacao_frequencia">Verificação de Frequência</option>
+                        <option value="transferencia_credito">Transferência de Crédito entre Filiais (PB)</option>
+                        <option value="cancelamento_matricula">Cancelamento de Matrícula (PB)</option>
+                        <option value="erro_060">Erro 060</option>
+                        <option value="candidato_sem_processo">Candidato sem Processo Ativo (Aula Teórica)</option>
+                        <option value="erro_face">Candidato com Erro "Face não cadastrada"</option>
+                    </optgroup>
+                    <optgroup label="Gestão de Conflitos e Certificados">
+                        <option value="verificacao_conflitos">Verificação de Conflitos</option>
+                        <option value="liberacao_conflitos">Liberação de Conflitos Indevidos</option>
+                        <option value="emissao_certificado">Emissão de Certificado do Candidato</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div id="sub-opcoes" class="form-group" style="display: none;"></div>
+
+            <button onclick="gerarProcedimento()">Ver Procedimento</button>
+        </div>
+
+        <div id="procedimento-resultado">
+            </div>
+    </div>
+
+    <script>
+        const subOpcoesConfig = {
+            liberacao_aula: `
+                <label for="sub_liberacao">A aula foi realizada no mesmo dia?</label>
+                <select id="sub_liberacao">
+                    <option value="mesmo_dia">Sim, hoje</option>
+                    <option value="outro_dia">Não, em data anterior</option>
+                </select>
+            `,
+            verificacao_frequencia: `
+                <label for="sub_frequencia">Qual o tipo de frequência?</label>
+                <select id="sub_frequencia">
+                    <option value="teorico">Teórico (Específico para PB)</option>
+                    <option value="pratico">Prático</option>
+                </select>
+            `,
+            erro_face: `
+                <label for="sub_face">O aluno possui foto cadastrada no sistema?</label>
+                <select id="sub_face">
+                    <option value="sim">Sim, possui foto</option>
+                    <option value="nao">Não, está sem foto</option>
+                </select>
+            `,
+             emissao_certificado: `
+                <label for="sub_emissao">Qual tipo de certificado será emitido?</label>
+                <select id="sub_emissao">
+                    <option value="normal">Certificado Padrão (CNH)</option>
+                    <option value="reciclagem">Certificado de Reciclagem</option>
+                </select>
+            `
+        };
+
+        function mostrarSubOpcoes() {
+            const cenario = document.getElementById('cenario-atendimento').value;
+            const subOpcoesDiv = document.getElementById('sub-opcoes');
+            
+            if (subOpcoesConfig[cenario]) {
+                subOpcoesDiv.innerHTML = subOpcoesConfig[cenario];
+                subOpcoesDiv.style.display = 'block';
+            } else {
+                subOpcoesDiv.style.display = 'none';
+                subOpcoesDiv.innerHTML = '';
+            }
+        }
+
+        function gerarProcedimento() {
+            const cenario = document.getElementById('cenario-atendimento').value;
+            const resultadoDiv = document.getElementById('procedimento-resultado');
+            
+            if (!cenario) {
+                resultadoDiv.style.display = 'block';
+                resultadoDiv.innerHTML = `<p style="color: #dc3545; text-align: center;">Por favor, selecione um cenário de atendimento para continuar.</p>`;
+                return;
+            }
+
+            let conteudoHtml = '';
+            let titulo = document.querySelector(`#cenario-atendimento option[value="${cenario}"]`).textContent;
+
+            switch (cenario) {
+                // ... [Casos anteriores permanecem os mesmos] ...
+                 case 'aluno_sem_credito':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>Situação: Aluno sem Crédito (BA)</h4>
+                            <div class="step-content">
+                                <p>Este procedimento é aplicável para o estado da <strong>Bahia (BA)</strong> quando um aluno necessita de créditos para realizar aulas.</p>
+                                <ol>
+                                    <li><strong>Ação:</strong> Inserir bônus de crédito para o aluno.</li>
+                                    <li><strong>Regra:</strong> Respeitar o limite máximo de <strong>15 créditos por categoria</strong>.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'liberacao_aula':
+                    const subLiberacao = document.getElementById('sub_liberacao').value;
+                    if (subLiberacao === 'mesmo_dia') {
+                        conteudoHtml = `
+                             <div class="step">
+                                <h4>Cenário: Aula Realizada no Mesmo Dia</h4>
+                                <div class="step-content">
+                                    <p><strong>Verificação Inicial:</strong></p>
+                                    <ol>
+                                        <li>Verifique se o aluno possui <strong>créditos suficientes</strong> para o envio da aula.</li>
+                                        <li>Verifique se a aula está com algum <strong>alerta</strong> que impeça o envio.</li>
+                                    </ol>
+                                    <div class="highlight">
+                                        <strong>Se não houver alerta e houver créditos:</strong> Oriente o CFC a aguardar o prazo de envio padrão, que é de <strong>até 24 horas</strong>, conforme estabelecido em contrato.
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        conteudoHtml = `
+                             <div class="step">
+                                <h4>Cenário: Aula Realizada em Dias Anteriores</h4>
+                                <div class="step-content">
+                                    <p>Investigue o status atual da aula no painel:</p>
+                                    <ul>
+                                        <li><strong>Em Alerta:</strong> Verifique se a aula foi recusada. Se sim, analise se os motivos são passíveis de uma reanálise pela equipe.</li>
+                                        <li><strong>Status Vermelho (Erro):</strong> Consulte o retorno do Detran para entender a falha. Determine se há possibilidade de reenvio ou reprocessamento da aula.</li>
+                                        <li><strong>Status Amarelo (Aguardando):</strong> Verifique a resposta do Detran. Analise se um reprocessamento pode resolver a pendência.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    break;
+                
+                case 'verificacao_frequencia':
+                    const subFrequencia = document.getElementById('sub_frequencia').value;
+                     if (subFrequencia === 'teorico') {
+                         conteudoHtml = `
+                             <div class="step">
+                                <h4>Cenário: Frequência Teórica (PB)</h4>
+                                <div class="step-content">
+                                    <p>Procedimento específico para a <strong>Paraíba (PB)</strong>.</p>
+                                    <ol>
+                                        <li><strong>Verificação Dupla:</strong> Confira a frequência do aluno tanto no <strong>painel do sistema</strong> quanto no <strong>emissor do certificado</strong>.</li>
+                                        <li><strong>Conformidade:</strong> Garanta que as informações de frequência estão consistentes em ambas as plataformas.</li>
+                                         <li><strong>Divergência:</strong> Em caso de dúvidas ou inconsistências, siga as orientações do documento específico sobre análise de frequência teórica.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                         `;
+                     } else {
+                          conteudoHtml = `
+                             <div class="step">
+                                <h4>Cenário: Frequência Prática</h4>
+                                <div class="step-content">
+                                    <ol>
+                                        <li><strong>Status das Aulas:</strong> Certifique-se de que todas as aulas necessárias estão com status "Enviada", "Validada" e "Realizada".</li>
+                                        <li><strong>Emissão de Certificado:</strong> Se o certificado não for gerado mesmo com as aulas corretas, verifique no emissor de certificados se há <strong>conflitos de aulas</strong> (ex: sobreposições).</li>
+                                        <li><strong>Resolução:</strong> Siga os procedimentos documentados para resolver conflitos de aulas no emissor.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                         `;
+                     }
+                    break;
+
+                 case 'transferencia_credito':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>Procedimento: Transferência de Crédito entre Filiais (PB)</h4>
+                            <div class="step-content">
+                                <p>Aplicável para transferir créditos entre CFCs que são filiais na <strong>Paraíba (PB)</strong>.</p>
+                                <ol>
+                                    <li><strong>Confirmação:</strong> Verifique se as duas unidades (origem e destino) são de fato filiais.</li>
+                                    <li><strong>Execução:</strong> Realize a transferência do crédito de um processo <strong>inativo</strong> para um processo <strong>ativo</strong> do aluno.</li>
+                                    <li><strong>Suporte:</strong> Em caso de dúvidas sobre o procedimento, consulte o grupo de Orientações.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'cancelamento_matricula':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>Passo a Passo: Cancelamento de Matrícula (PB)</h4>
+                            <div class="step-content">
+                                 <p>Procedimento para cancelar a matrícula de um aluno vinculado a um CFC na <strong>Paraíba (PB)</strong>.</p>
+                                <ol>
+                                    <li><strong>Confirmação:</strong> Assegure-se de que o aluno pertence ao CFC que solicitou o cancelamento.</li>
+                                    <li><strong>Acesso ao IDS:</strong> Navegue até o menu <strong>Processos > Filtrar pelo CPF</strong> do aluno.</li>
+                                    <li><strong>Seleção:</strong> Marque a <i>flag</i> do processo que está ativo.</li>
+                                    <li><strong>Finalização:</strong> Clique no botão <strong>"Cancelar"</strong> para efetivar a operação.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                
+                 case 'erro_060':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>Análise e Resolução: Erro 060</h4>
+                            <div class="step-content">
+                                <ol>
+                                    <li><strong>Crédito:</strong> Confirme se o aluno possui crédito disponível para a aula.</li>
+                                    <li><strong>Data RENACH:</strong> Verifique a data de validade do RENACH no sistema <strong>Retool</strong>.</li>
+                                    <li class="highlight">
+                                        <strong>Se RENACH estiver vencida:</strong>
+                                        <br> a) Ajuste a data manualmente utilizando a opção <strong>"Setar Data Validade"</strong> no Retool.
+                                        <br> b) Peça ao CFC para <strong>sincronizar os dados</strong> e tentar abrir a aula novamente.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'candidato_sem_processo':
+                     conteudoHtml = `
+                        <div class="step">
+                            <h4>Análise: Candidato sem Processo Ativo (Aula Teórica)</h4>
+                            <div class="step-content">
+                                <ol>
+                                    <li><strong>Status do Processo:</strong> Confirme no sistema se o processo do candidato está ativo.</li>
+                                     <li><strong>Data de Validade:</strong> Verifique no <strong>Retool</strong> a data de validade do processo.</li>
+                                    <li class="highlight">
+                                        <strong>Se o processo estiver vencido:</strong>
+                                        <br> a) Ajuste a data de validade para reativá-lo.
+                                        <br> b) Oriente o aluno a <strong>recarregar a página</strong> (F5) e tentar acessar a aula teórica novamente.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                
+                 case 'erro_face':
+                    const subFace = document.getElementById('sub_face').value;
+                    if (subFace === 'sim') {
+                        conteudoHtml = `
+                            <div class="step">
+                                <h4>Cenário: Aluno possui foto, mas apresenta erro</h4>
+                                <div class="step-content">
+                                    <p>O erro "Face não cadastrada" ocorre mesmo com uma foto visível no sistema.</p>
+                                    <ol>
+                                        <li><strong>Ação:</strong> Baixe a foto atual do aluno para o seu computador.</li>
+                                        <li><strong>Procedimento:</strong> Tente importar o mesmo arquivo de foto novamente no cadastro do aluno.</li>
+                                        <li><strong>Observação:</strong> Este procedimento muitas vezes corrige falhas de processamento ou corrupção no arquivo original.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                         conteudoHtml = `
+                            <div class="step">
+                                <h4>Cenário: Aluno não possui foto cadastrada</h4>
+                                <div class="step-content">
+                                     <p>O procedimento varia conforme o estado (UF):</p>
+                                    <ul>
+                                        <li><strong>Importação Manual:</strong> Verifique se o estado do CFC permite importação manual. Se sim, solicite suporte do N2 para realizar o procedimento.</li>
+                                        <li><strong>Ferramentas de Captura:</strong> Para estados como <strong>BA e SE</strong>, utilize a ferramenta <strong>CAPTURE</strong> para realizar o registro facial.</li>
+                                        <li><strong>Foto do Detran:</strong> Em estados onde a foto é tirada diretamente no Detran, oriente o CFC a seguir o fluxo local para que o aluno realize a captura oficial.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    break;
+
+                case 'verificacao_conflitos':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>O que é um Conflito?</h4>
+                            <div class="step-content">
+                                <p>Um conflito ocorre quando uma aula é ministrada de forma irregular, como um instrutor ministrando duas aulas ao mesmo tempo. O sistema iDS CNH sinaliza isso na emissão do certificado.</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <h4>Como o CFC Identifica Conflitos</h4>
+                            <div class="step-content">
+                                <p>O agente N1 deve orientar o CFC a seguir estes passos no site do Detran:</p>
+                                <ol>
+                                    <li>Acessar a aba <strong>"Emissão de Certificado"</strong>.</li>
+                                    <li>Localizar o candidato utilizando o número do <strong>RENACH</strong> e clicar em "Pesquisar".</li>
+                                    <li>Na parte inferior da tela, clicar na opção <strong>"Exibir conflitos"</strong>.</li>
+                                </ol>
+                                <div class="highlight">
+                                    <strong>Responsabilidade do Agente N1:</strong> Após o CFC identificar os conflitos, o agente N1 deve analisar as aulas para verificar se são passíveis de liberação.
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                
+                case 'liberacao_conflitos':
+                    conteudoHtml = `
+                        <div class="step">
+                            <h4>Passo 1: Acessar a Área de Processos</h4>
+                            <div class="step-content">
+                                <p>No <strong>iDS CNH admin</strong>, navegue até:</p>
+                                <strong>Módulo iDS CNH admin > Aba "Principal" (ou "Diretor") > "Processo"</strong>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <h4>Passo 2: Localizar e Verificar Conflitos</h4>
+                            <div class="step-content">
+                                <ol type="a">
+                                    <li>Localize o processo do candidato pelo <strong>CPF ou Renach</strong>.</li>
+                                    <li>Selecione o processo com a situação <strong>"Iniciado"</strong>.</li>
+                                    <li>Clique no botão <strong>"Verificar conflitos de frequência"</strong> no topo do menu.</li>
+                                </ol>
+                            </div>
+                        </div>
+                         <div class="step">
+                            <h4>Passo 3 e 4: Liberar o Conflito</h4>
+                            <div class="step-content">
+                                <ol>
+                                    <li>Na tela de conflitos, selecione a(s) aula(s) a ser(em) liberada(s).</li>
+                                    <li>Clique no ícone <strong>"Alternar conflito"</strong>.</li>
+                                    <li><strong>Desmarque a caixa</strong> para que a nomenclatura mude para <strong>"Não"</strong> em verde.</li>
+                                </ol>
+                                <div class="highlight"><strong>Atenção:</strong> Se houver múltiplos conflitos, todos devem ser desmarcados para a liberação completa.</div>
+                            </div>
+                        </div>
+                         <div class="step">
+                            <h4>Passo 5: Salvar</h4>
+                            <div class="step-content">
+                                <p>Para finalizar, clique em <strong>"Salvar alterações"</strong> para registrar as liberações no sistema.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'emissao_certificado':
+                    const subEmissao = document.getElementById('sub_emissao').value;
+                     conteudoHtml = `
+                        <div class="step">
+                            <h4>Acesso ao Painel do CFC</h4>
+                            <div class="step-content">
+                                <p>O CFC deve acessar o sistema <strong>idscnh - PAINELCFC</strong> para emitir o certificado.</p>
+                                <ul>
+                                    <li><strong>URL de Acesso:</strong> <a href="http://bioapp.detran.pb.gov.br/painelcfc" target="_blank">http://bioapp.detran.pb.gov.br/painelcfc</a></li>
+                                    <li><strong>Login:</strong> Utilizar CNPJ e senha do CFC.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    if (subEmissao === 'normal') {
+                        conteudoHtml += `
+                            <div class="step">
+                                <h4>Emissão de Certificado Padrão (CNH)</h4>
+                                <div class="step-content">
+                                    <ol>
+                                        <li>No menu do painel, escolher a opção <strong>"Emissão de Certificado"</strong>.</li>
+                                        <li>Localizar o candidato utilizando o número do <strong>Renach</strong>.</li>
+                                        <li>Prosseguir com a emissão.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        `;
+                    } else { // Reciclagem
+                         conteudoHtml += `
+                            <div class="step">
+                                <h4>Emissão de Certificado de Reciclagem</h4>
+                                <div class="step-content">
+                                     <ol>
+                                        <li>No menu do painel, escolher a opção <strong>"Emissão de Certificado"</strong>.</li>
+                                        <li>Localizar o candidato utilizando o número do <strong>CPF</strong>.</li>
+                                        <li>Prosseguir com a emissão do certificado de reciclagem.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    break;
+
+                default:
+                    conteudoHtml = "<p>Cenário não encontrado. Por favor, selecione uma opção válida.</p>";
+            }
+            
+            resultadoDiv.innerHTML = `<h3 class="scenario-title">${titulo}</h3>${conteudoHtml}<p class="note">Este é um guia rápido. Para casos complexos, consulte a documentação completa ou a equipe de suporte.</p>`;
+            resultadoDiv.style.display = 'block';
+        }
+
+        // Inicializa as sub-opções ao carregar a página
+        document.addEventListener('DOMContentLoaded', mostrarSubOpcoes);
+    </script>
+
+</body>
+</html>
