@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia para Coletor 4.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a698a);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.1;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .description {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .flowchart-container {
+            padding: 40px 20px;
+        }
+
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .step {
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-icon {
+            font-size: 2.5em;
+            margin-right: 20px;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .step:hover .step-icon {
+            color: #17a2b8;
+        }
+
+        .step-title-container {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-weight: bold;
+            font-size: 20px;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .step:hover .step-title {
+            color: #17a2b8;
+        }
+
+        .step-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        /* Cores dos cartões */
+        .precondition { 
+            background: #e6f7ff; 
+            border-left: 6px solid #3498db; 
+        }
+        .permission { 
+            background: #e0f2f7; 
+            border-left: 6px solid #17a2b8; 
+        }
+        .migration { 
+            background: #f0e6f2; 
+            border-left: 6px solid #6f42c1; 
+        }
+        .backup { 
+            background: #eaf7ed; 
+            border-left: 6px solid #28a745; 
+        }
+
+        .back-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-button {
+            padding: 15px 30px;
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            background: #1e2b38;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        /* Estilos do Modal (Pop-up) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            padding-top: 60px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: none;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+        }
+
+        @keyframes animatetop {
+            from { top: -300px; opacity: 0; }
+            to { top: 0; opacity: 1; }
+        }
+
+        .modal-header {
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 36px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .modal-body p, .modal-body ul, .modal-body ol {
+            font-size: 15px;
+            color: #34495e;
+            line-height: 1.8;
+        }
+        
+        .modal-body ul, .modal-body ol {
+            padding-left: 25px;
+            margin-top: 15px;
+        }
+
+        .modal-body li {
+            margin-bottom: 10px;
+        }
+        
+        .image-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .image-container p {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Guia para Coletor 4.0</h1>
+            <p class="description">Documentação da Nova Versão da Aplicação Móvel Coletor com foco em Armazenamento e Migração.</p>
+        </header>
+
+        <div class="flowchart-container">
+            <div class="flowchart">
+                <div class="step precondition" data-modal-target="modal-precondition">
+                    <div class="step-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Requisitos e Metas Principais</div>
+                        <div class="step-subtitle">Detalhes sobre os requisitos da nova versão.</div>
+                    </div>
+                </div>
+
+                <div class="step permission" data-modal-target="modal-permission">
+                    <div class="step-icon"><i class="fa-solid fa-user-lock"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Mudanças de Permissão</div>
+                        <div class="step-subtitle">Alterações nas permissões de acesso ao armazenamento.</div>
+                    </div>
+                </div>
+
+                <div class="step migration" data-modal-target="modal-migration">
+                    <div class="step-icon"><i class="fa-solid fa-arrows-turn-to-dots"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Cenário de Migração de Dados</div>
+                        <div class="step-subtitle">Instruções para a migração automática de dados.</div>
+                    </div>
+                </div>
+
+                <div class="step backup" data-modal-target="modal-backup">
+                    <div class="step-icon"><i class="fa-solid fa-database"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Backup e Acesso aos Dados (Suporte)</div>
+                        <div class="step-subtitle">Procedimento para exportar o banco de dados.</div>
+                    </div>
+                </div>
+
+                <div class="step migration" data-modal-target="modal-server">
+                    <div class="step-icon"><i class="fa-solid fa-server"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Configuração do Servidor</div>
+                        <div class="step-subtitle">Como configurar o aplicativo para diferentes servidores.</div>
+                    </div>
+                </div>
+                <div class="step migration" data-modal-target="modal-video">
+                    <div class="step-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="step-title-container">
+                        <div class="step-title">Video Explicativo</div>
+                        <div class="step-subtitle">Video de treinamento sobre novo coletor</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-button-container">
+            <a href="menu.html" class="back-button">Voltar para o Menu</a>
+        </div>
+    </div>
+
+    <div id="modal-precondition" class="modal">
+        <div class="modal-content precondition">
+            <div class="modal-header">
+                <h2>1. Requisitos e Metas Principais</h2>
+                <span class="close" onclick="closeModal('modal-precondition')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>O objetivo principal é alterar o armazenamento para que seja possível hospedar o aplicativo Coletor na loja da Google.</p>
+                <p><strong>Critérios de Aceite e Restrições de Versão:</strong></p>
+                <ul>
+                    <li>A nova versão será executada apenas em dispositivos Android <strong>MAIOR ou IGUAL ao 10</strong>.</li>
+                    <li>A aplicação deve executar a migração de local de armazenamento, se necessário.</li>
+                    <li>A necessidade de permissão restrita de armazenamento da aplicação deve ser removida.</li>
+                    <li>A aplicação deve funcionar corretamente apenas com permissões padrão.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-permission" class="modal">
+        <div class="modal-content permission">
+            <div class="modal-header">
+                <h2>2. Mudanças de Permissão</h2>
+                <span class="close" onclick="closeModal('modal-permission')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>A nova versão da aplicação foi desenvolvida para operar sem a necessidade de permissões restritas.</p>
+                <ul>
+                    <li><strong>Remoção de Permissão Restrita:</strong> Não deve ser exigida nenhuma permissão restrita.</li>
+                    <li><strong>Permissão de Acesso:</strong> Houve a remoção da permissão de acesso a pastas e diretórios.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-migration" class="modal">
+        <div class="modal-content migration">
+            <div class="modal-header">
+                <h2>3. Cenário de Migração de Dados</h2>
+                <span class="close" onclick="closeModal('modal-migration')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Quando a nova versão da aplicação for executada pela primeira vez, ela deve realizar a migração automática dos dados para o novo local.</p>
+                <p><strong>Procedimento de Migração:</strong></p>
+                <ol>
+                    <li>A aplicação exibirá um aviso de "Detectada necessidade de migração de dados".</li>
+                    <li>O usuário será instruído a selecionar, na pasta `Armazenamento interno > SuperPratico > DataBase`, o arquivo `DATABASE.db`.</li>
+                    <li>O usuário precisará clicar uma vez na base.</li>
+                </ol>
+                <div class="image-container">
+                    <p>A imagem abaixo mostra o aviso de migração de dados e as instruções fornecidas ao usuário:</p>
+                    <img src="img/tela1.png" alt="Aviso de migração de dados">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-backup" class="modal">
+        <div class="modal-content backup">
+            <div class="modal-header">
+                <h2>4. Backup e Acesso aos Dados (Suporte)</h2>
+                <span class="close" onclick="closeModal('modal-backup')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>A aplicação deve ter a opção de baixar backup dos dados para a pasta downloads, permitindo acesso integral do suporte.</p>
+                <p><strong>Procedimento de Exportação de Banco de Dados:</strong></p>
+                <ol>
+                    <li>Acesse a aplicação.</li>
+                    <li>Clique na engrenagem (Configurações) no canto superior direito.</li>
+                    <li>Acesse a tela de Configurações.</li>
+                    <li>Será necessário inserir a senha 'suporte'.</li>
+                    <li>Clique em "Exportar banco de dados".</li>
+                    <li>Uma cópia do banco será criada na pasta `downloads` do celular.</li>
+                </ol>
+                <p><strong>Vantagem:</strong> Com o arquivo na pasta `downloads`, não será necessário acessar a máquina (computador) para que o suporte tenha acesso à base.</p>
+                <div class="image-container">
+                    <p>A imagem abaixo destaca o ícone da engrenagem para acesso às configurações:</p>
+                    <img src="img/Tela2.png" alt="Acesso às configurações">
+                </div>
+                <div class="image-container">
+                    <p>A imagem abaixo destaca a opção de Exportar Banco:</p>
+                    <img src="img/Tela3.png" alt="Exportar Banco de Dados">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-server" class="modal">
+        <div class="modal-content migration">
+            <div class="modal-header">
+                <h2>5. Configuração do Servidor</h2>
+                <span class="close" onclick="closeModal('modal-server')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Deverá ser configurado o aplicativo para um estado específico</p>
+                <p><strong>Procedimento de Configuração:</strong></p>
+                <ol>
+                    <li>Será necessário acessar a engrenagem (Configurações)</li>
+                    <li>Mudar o link de apontamento no campo "Endereço do Servidor" para o link do estado desejado.</li>
+                </ol>
+                <div class="image-container">
+                    <p>A imagem abaixo mostra como acessar as configurações</p>
+                    <img src="img/tela2.png" alt="Acesso Configurações">
+                </div>
+                <div class="image-container">
+                    <p>A imagem abaixo mostra como acessar as configurações</p>
+                    <img src="img/tela5.png" alt="Endereço do Servidor">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-video" class="modal">
+        <div class="modal-content migration">
+            <div class="modal-header">
+                <h2>Vídeo</h2>
+                <span class="close" onclick="closeModal('modal-server')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Vídeo explicativo</p>
+                <div class="image-container">
+                    <p>O vídeo trás explicações sobre a configuração</p>
+                    <div class="video-container">
+                        <video controls preload="none">
+                            <source src="img/Atualização_App_Coletor.mp4" type="video/mp4">
+                            Seu navegador não suporta o elemento de vídeo.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach(step => {
+                step.addEventListener('click', (event) => {
+                    const modalId = event.currentTarget.getAttribute('data-modal-target');
+                    if (modalId) {
+                        openModal(modalId);
+                    }
+                });
+            });
+
+            // Fechar o modal clicando fora dele
+            window.onclick = function(event) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
