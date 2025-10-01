@@ -1,10 +1,15 @@
 {
   "rewrites": [
+    { 
+      "source": "/api/(.*)", 
+      "destination": "/api" 
+    },
     { "source": "/", "destination": "/menu.html" },
     { "source": "/abertura", "destination": "/abertura.html" },
     { "source": "/capiturador", "destination": "/capiturador.html" },
     { "source": "/desligamento", "destination": "/desligamento.html" },
     { "source": "/guia_atendimento", "destination": "/guia_atendimento.html" },
-    { "source": "/troca_de_placa", "destination": "/troca_de_placa.html" }
+    { "source": "/troca_de_placa", "destination": "/troca_de_placa.html" },
+    { "source": "/gerenciar_base", "destination": "/gerenciar_base.html" }
   ]
 }
