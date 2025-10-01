@@ -5,52 +5,65 @@ const cors = require('cors');
 const app = express();
 
 // --- Configurações Iniciais ---
-// Permite requisições de origens diferentes (CORS) - ESSENCIAL
 app.use(cors()); 
 app.use(express.json());
 
 // --- Variáveis de Ambiente ---
 const MONGODB_URI = process.env.MONGODB_URI; 
-const PORT = process.env.PORT || 3000; 
+let isConnected = false; // Variável para controlar o estado da conexão
 
-// Conexão com o banco de dados MongoDB
-mongoose.connect(MONGODB_URI)
-    .then(() => console.log('Conectado ao MongoDB!'))
-    .catch(err => console.error('Erro de conexão com o MongoDB:', err));
+// --- Função de Conexão (Chamada sob demanda) ---
+async function connectDB() {
+    if (isConnected) return;
+    try {
+        await mongoose.connect(MONGODB_URI);
+        isConnected = true;
+        console.log('Conexão ao MongoDB estabelecida com sucesso na requisição.');
+    } catch (err) {
+        console.error('ERRO CRÍTICO NA CONEXÃO MONGODB:', err.message);
+        // Não jogamos o erro para não travar o servidor, mas logamos
+    }
+}
 
 // --- Schemas (Modelo de Dados Memory) ---
-
 const memorySchema = new mongoose.Schema({
     agente: String,
     dataHora: { type: Date, default: Date.now },
-    texto: String, // Contém Título e Conteúdo para busca
+    texto: String, 
     estado: String, 
     imagemUrl: String
 });
 
-// CRIAÇÃO DO ÍNDICE DE TEXTO: Fundamental para o chatbot buscar palavras-chave rapidamente
 memorySchema.index({ texto: 'text' }); 
 
-const Memory = mongoose.model('Memory', memorySchema); 
+// Evitar recompilação do modelo em Serverless
+const Memory = mongoose.models.Memory || mongoose.model('Memory', memorySchema); 
 
 // --- Rotas da API ---
 
-// Rota de Teste (Raiz)
+// Rota de Teste
 app.get('/', (req, res) => {
     res.send('Servidor Base de Conhecimento API está ativo!');
 });
 
 // -----------------------------------------------------------
-// ROTA: Salvar Conteúdo na Base de Conhecimento (Gerenciamento)
-// Rota: POST /api/memories
+// ROTA: Salvar Conteúdo na Base de Conhecimento (POST)
 // -----------------------------------------------------------
 app.post('/api/memories', async (req, res) => {
+    await connectDB(); // Tenta conectar antes de qualquer operação de DB
+
+    if (!isConnected) {
+        return res.status(503).json({ 
+            message: 'Serviço Indisponível. Falha na conexão com o Banco de Dados (Verifique MONGODB_URI/IP Whitelist).',
+            error: 'Database Connection Failed'
+        });
+    }
+
     try {
         const novaMemoria = new Memory(req.body);
         await novaMemoria.save();
         res.status(201).send(novaMemoria);
     } catch (error) {
-        // Envia erros detalhados para o frontend gerenciar
         res.status(400).json({ 
             message: 'Erro ao salvar conteúdo.', 
             error: error.message 
@@ -58,26 +71,19 @@ app.post('/api/memories', async (req, res) => {
     }
 });
 
-// ROTA: Listar todas as Memórias (Para futuras telas de listagem/edição)
-// Rota: GET /api/memories
-app.get('/api/memories', async (req, res) => {
-    try {
-        const memories = await Memory.find({}).sort({ dataHora: -1 });
-        res.send(memories);
-    } catch (error) {
-        res.status(500).json({ 
-            message: 'Erro ao buscar memórias.', 
-            error: error.message 
-        });
-    }
-});
-
-
 // -----------------------------------------------------------
-// ROTA CRUCIAL: BUSCA DO CHATBOT 
-// Rota: POST /api/search-knowledge
+// ROTA CRUCIAL: BUSCA DO CHATBOT (POST)
 // -----------------------------------------------------------
 app.post('/api/search-knowledge', async (req, res) => {
+    await connectDB(); // Tenta conectar antes da busca
+
+    if (!isConnected) {
+        return res.status(503).json({ 
+            message: 'Serviço Indisponível. Falha na conexão com o Banco de Dados.',
+            error: 'Database Connection Failed'
+        });
+    }
+    
     const { query } = req.body;
 
     if (!query) {
@@ -85,7 +91,7 @@ app.post('/api/search-knowledge', async (req, res) => {
     }
 
     try {
-        // Busca usando o índice de texto e ordena por relevância (score)
+        // ... (Lógica de busca inalterada)
         const knowledgeItems = await Memory.find(
             { $text: { $search: query } },
             { score: { $meta: "textScore" } } 
@@ -93,7 +99,6 @@ app.post('/api/search-knowledge', async (req, res) => {
         .sort({ score: { $meta: "textScore" } })
         .limit(5);
 
-        // Formatar a resposta para o frontend
         const results = knowledgeItems.map(item => {
             const [title, ...contentParts] = item.texto.split(': ');
             const content = contentParts.join(': ') || item.texto; 
@@ -117,12 +122,6 @@ app.post('/api/search-knowledge', async (req, res) => {
             error: error.message 
         });
     }
-});
-
-
-// Inicia o servidor (apenas para ambiente local. Vercel usa o module.exports)
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
 });
 
 // Exporta o app para o Vercel
