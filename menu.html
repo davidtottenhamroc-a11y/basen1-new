@@ -3,114 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Base para N2 - VSoft</title>
+  <title>Menu Principal - Ferramentas de Suporte Técnico</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #0d1b2a;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef2f5;
+      color: #333;
+      line-height: 1.6;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
     }
-    .container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
-      max-width: 800px;
+    .main-content {
+      display: flex;
+      gap: 30px;
+      max-width: 1100px;
       width: 100%;
     }
-    h1 {
+    .menu-container {
+      flex: 1;
+      max-width: 700px;
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 35px;
+      border-bottom: 2px solid #0056b3;
+      padding-bottom: 20px;
+    }
+    header h1 {
+      color: #0056b3;
+      margin: 0;
+      font-size: 28px;
+    }
+    header p {
+      margin: 8px 0 0;
+      color: #555;
+      font-size: 16px;
+    }
+    .menu-list { list-style: none; padding: 0; margin: 0; }
+    .menu-item { margin-bottom: 18px; }
+    .menu-link {
+      display: block;
+      padding: 20px;
+      background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+      color: #343a40;
+      text-decoration: none;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      font-weight: 600;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-link:before {
+      content: '→';
+      position: absolute;
+      left: 20px;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+    .menu-link span { margin-left: 25px; display: block; }
+    .menu-link:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
+      border-color: #0056b3;
       color: #0056b3;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      margin: 10px 0;
-    }
-    ul li a {
-      display: block;
-      text-decoration: none;
-      background: #f4f4f4;
-      padding: 12px;
-      border-radius: 6px;
-      color: #333;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    ul li a:hover {
-      background: #0056b3;
-      color: #fff;
-    }
-    .management-link {
-      background: #ffc107;
-      text-align: center;
-    }
-    .management-link:hover {
-      background: #e0a800;
-      color: #fff;
-    }
-    footer {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
-    }
+    .menu-link:hover:before { transform: translateX(5px); opacity: 1; }
+    .management-link { background-color: #ffc107; color: #333; border: 1px solid #ffc107; text-align: center; margin-top: 20px; }
+    .management-link:hover { background-color: #e0a800; border-color: #e0a800; color: #333; }
+    footer { text-align: center; margin-top: 30px; font-size: 14px; color: #777; }
 
-    /* Ícone flutuante do chatbot */
-    .chatbot-icon {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #28a745;
-      color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 28px;
-      cursor: pointer;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-    .chatbot-icon:hover {
-      transform: scale(1.1);
-    }
-
-    /* Modal do chatbot */
-    .chatbot-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    .chatbot-content {
-      background: #fff;
-      width: 90%;
-      height: 90%;
+    /* --- Chatbot --- */
+    .chatbot-container {
+      width: 350px;
+      background-color: #ffffff;
       border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      position: relative;
+      min-height: 500px;
     }
     .chatbot-header {
       text-align: center;
@@ -118,24 +100,14 @@
       margin-bottom: 20px;
       padding-bottom: 10px;
       border-bottom: 2px solid #28a745;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    .chatbot-close {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 22px;
-      cursor: pointer;
-      color: #555;
     }
     .chatbot-messages {
       flex-grow: 1;
       overflow-y: auto;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 10px;
+      max-height: 400px;
+      padding-right: 10px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ccc;
     }
     .message-bubble {
       padding: 10px 15px;
@@ -143,77 +115,66 @@
       margin-bottom: 10px;
       max-width: 85%;
       word-wrap: break-word;
+      white-space: pre-wrap; /* preserva quebras de linha */
     }
-    .user-message {
-      background-color: #007bff;
-      color: white;
-      margin-left: auto;
-    }
-    .bot-message {
-      background-color: #e9ecef;
-      color: #333;
-      margin-right: auto;
-    }
-    .chatbot-input-area {
-      display: flex;
-      gap: 10px;
-    }
+    .user-message { background-color: #007bff; color: white; margin-left: auto; }
+    .bot-message { background-color: #e9ecef; color: #333; margin-right: auto; }
+    .chatbot-input-area { display: flex; gap: 10px; }
     #chat-input {
-      flex-grow: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
+      flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;
     }
     #send-button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
+      background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;
     }
-    #send-button:hover {
-      background-color: #218838;
+    #send-button:hover { background-color: #218838; }
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0056b3;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 2s linear infinite;
+      display: none;
+      margin: 10px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @media (max-width: 1000px) {
+      .main-content { flex-direction: column; align-items: center; }
+      .menu-container, .chatbot-container { max-width: 600px; width: 100%; margin-bottom: 20px; }
+      .chatbot-container { min-height: 400px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Base de Conhecimento - N2 VSoft</h1>
-    <ul>
-      <li><a href="guia_atendimento.html" target="_blank"><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</a></li>
-      <li><a href="desligamento.html" target="_blank"><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</a></li>
-      <li><a href="abertura.html" target="_blank"><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</a></li>
-      <li><a href="troca_de_placa.html" target="_blank"><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</a></li>
-      <li><a href="capiturador.html" target="_blank"><i class="fas fa-video"></i> Fluxograma para Instalação de Capturador</a></li>
-      <li><a href="universidade_suporte.html" target="_blank"><i class="fas fa-graduation-cap"></i> Universidade do Suporte</a></li>
-      <li><a href="gerenciar_base.html" class="management-link" target="_blank"><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</a></li>
-    </ul>
-    <footer>
-      <p>Central de Recursos para Suporte N1</p>
-    </footer>
-  </div>
+  <div class="main-content">
+    <div class="menu-container">
+      <header>
+        <h1>Painel de Ferramentas Técnicas</h1>
+        <p>Selecione um dos simuladores abaixo para iniciar.</p>
+      </header>
+      <ul class="menu-list">
+        <li class="menu-item"><a href="guia_atendimento.html" class="menu-link" target="_blank"><span><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</span></a></li>
+        <li class="menu-item"><a href="desligamento.html" class="menu-link" target="_blank"><span><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</span></a></li>
+        <li class="menu-item"><a href="abertura.html" class="menu-link" target="_blank"><span><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</span></a></li>
+        <li class="menu-item"><a href="troca_de_placa.html" class="menu-link" target="_blank"><span><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</span></a></li>
+        <li class="menu-item"><a href="capiturador.html" class="menu-link" target="_blank"><span><i class="fas fa-video"></i> Fluxograma para Instalação de capturador</span></a></li>
+        <li class="menu-item"><a href="universidade_suporte.html" class="menu-link" target="_blank"><span><i class="fas fa-graduation-cap"></i> Universidade do Suporte</span></a></li>
+        <li class="menu-item"><a href="gerenciar_base.html" class="menu-link management-link"><span><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</span></a></li>
+      </ul>
+      <footer><p>Central de Recursos para Suporte N1</p></footer>
+    </div>
 
-  <!-- Ícone flutuante do chatbot -->
-  <div class="chatbot-icon" id="chatbot-icon">
-    <i class="fas fa-robot"></i>
-  </div>
-
-  <!-- Modal do chatbot -->
-  <div class="chatbot-modal" id="chatbot-modal">
-    <div class="chatbot-content">
-      <span class="chatbot-close" id="chatbot-close">&times;</span>
+    <!-- Chatbot -->
+    <div class="chatbot-container">
       <div class="chatbot-header">
-        🤖 Chatbot Base de Conhecimento
+        <h2><i class="fas fa-robot"></i> Chatbot Base de Conhecimento</h2>
+        <small>Pergunte sobre erros, processos ou palavras-chave.</small>
       </div>
       <div class="chatbot-messages" id="chatbot-messages">
-        <div class="message-bubble bot-message">
-          Olá! Sou seu assistente de Suporte N1. Como posso te ajudar hoje?
-        </div>
+        <div class="message-bubble bot-message">Olá! Sou seu assistente de Suporte N1. Como posso te ajudar hoje?</div>
       </div>
+      <div class="loader" id="loader"></div>
       <div class="chatbot-input-area">
         <input type="text" id="chat-input" placeholder="Digite sua pergunta...">
         <button id="send-button"><i class="fas fa-paper-plane"></i></button>
@@ -222,67 +183,62 @@
   </div>
 
   <script>
-    const chatbotIcon = document.getElementById('chatbot-icon');
-    const chatbotModal = document.getElementById('chatbot-modal');
-    const chatbotClose = document.getElementById('chatbot-close');
-
-    // Abrir chatbot
-    chatbotIcon.addEventListener('click', () => {
-      chatbotModal.style.display = 'flex';
-    });
-
-    // Fechar chatbot com X
-    chatbotClose.addEventListener('click', () => {
-      chatbotModal.style.display = 'none';
-    });
-
-    // Fechar chatbot com ESC
-    document.addEventListener('keydown', (e) => {
-      if (e.key === "Escape") {
-        chatbotModal.style.display = 'none';
-      }
-    });
-
-    // --- Lógica que você pediu para aplicar ---
+    const BACKEND_URL = 'https://basen1-new.vercel.app';
+    const messagesDiv = document.getElementById('chatbot-messages');
+    const inputField = document.getElementById('chat-input');
     const sendButton = document.getElementById('send-button');
-    const chatInput = document.getElementById('chat-input');
-    const chatMessages = document.getElementById('chatbot-messages');
+    const loader = document.getElementById('loader');
 
-    // Função para adicionar mensagens ao chat
-    function addMessage(text, sender = 'user') {
+    function appendMessage(text, sender) {
       const bubble = document.createElement('div');
       bubble.classList.add('message-bubble');
       bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-      bubble.innerText = text;
-      chatMessages.appendChild(bubble);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      bubble.innerHTML = text; // agora interpreta <b>, <br> etc.
+      messagesDiv.appendChild(bubble);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    // Função para simular resposta do bot
-    function botResponse(userText) {
-      let response = "Desculpe, ainda não sei responder isso.";
-      if (userText.toLowerCase().includes("obd")) {
-        response = "O OBD é a interface de diagnóstico veicular utilizada para leitura de falhas.";
+    async function sendMessage() {
+      const userText = inputField.value.trim();
+      if (userText === '') return;
+
+      appendMessage(userText, 'user');
+      inputField.value = '';
+      loader.style.display = 'block';
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: userText })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          let botResponseText;
+
+          if (data.results && data.results.length > 0) {
+            botResponseText = "<b>Encontrei as seguintes informações na Base de Conhecimento:</b><br><br>";
+            data.results.forEach((item, index) => {
+              botResponseText += `<b>${index + 1}. ${item.title}</b> (${item.estado || 'Geral'})<br>${item.content}<br><br>`;
+            });
+          } else {
+            botResponseText = `Desculpe, não encontrei nada na base de conhecimento para: <b>"${userText}"</b>.`;
+          }
+          appendMessage(botResponseText, 'bot');
+        } else {
+          appendMessage('⚠️ Erro ao comunicar com o servidor.', 'bot');
+        }
+      } catch (error) {
+        console.error(error);
+        appendMessage('❌ Erro de conexão com o backend.', 'bot');
+      } finally {
+        loader.style.display = 'none';
       }
-      addMessage(response, 'bot');
     }
 
-    // Ação do botão enviar
-    sendButton.addEventListener('click', () => {
-      const text = chatInput.value.trim();
-      if (text) {
-        addMessage(text, 'user');
-        chatInput.value = '';
-        setTimeout(() => botResponse(text), 500); // simula atraso de resposta
-      }
-    });
-
-    // Enter também envia
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendButton.click();
-      }
-    });
+    sendButton.addEventListener('click', sendMessage);
+    inputField.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
   </script>
 </body>
 </html>
