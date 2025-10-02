@@ -3,111 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu Principal - Ferramentas de Suporte Técnico</title>
+  <title>Base para N2 - VSoft</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #0d1b2a; /* Azul escuro fosco */
-      color: #333;
-      line-height: 1.6;
+      font-family: Arial, sans-serif;
+      background-color: #0d1b2a;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
     }
-    .main-content {
-      display: flex;
-      gap: 30px;
-      max-width: 1100px;
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+      max-width: 800px;
       width: 100%;
     }
-    .menu-container {
-      flex: 1;
-      max-width: 700px;
-      background-color: #ffffff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-    header {
+    h1 {
       text-align: center;
-      margin-bottom: 35px;
-      border-bottom: 2px solid #0056b3;
-      padding-bottom: 20px;
-    }
-    header h1 {
+      margin-bottom: 20px;
       color: #0056b3;
-      margin: 0;
-      font-size: 28px;
     }
-    header p {
-      margin: 8px 0 0;
-      color: #555;
-      font-size: 16px;
-    }
-    .menu-list {
+    ul {
       list-style: none;
       padding: 0;
-      margin: 0;
     }
-    .menu-item {
-      margin-bottom: 18px;
+    ul li {
+      margin: 10px 0;
     }
-    .menu-link {
+    ul li a {
       display: block;
-      padding: 20px;
-      background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-      color: #343a40;
       text-decoration: none;
-      border-radius: 8px;
-      border: 1px solid #dee2e6;
-      font-weight: 600;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 6px;
+      color: #333;
+      font-weight: bold;
+      transition: 0.3s;
     }
-    .menu-link:before {
-      content: '→';
-      position: absolute;
-      left: 20px;
-      opacity: 0.5;
-      transition: all 0.3s ease;
-    }
-    .menu-link span {
-      margin-left: 25px;
-      display: block;
-    }
-    .menu-link:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
-      border-color: #0056b3;
-      color: #0056b3;
-    }
-    .menu-link:hover:before {
-      transform: translateX(5px);
-      opacity: 1;
+    ul li a:hover {
+      background: #0056b3;
+      color: #fff;
     }
     .management-link {
-      background-color: #ffc107;
-      color: #333;
-      border: 1px solid #ffc107;
+      background: #ffc107;
       text-align: center;
-      margin-top: 20px;
     }
     .management-link:hover {
-      background-color: #e0a800;
-      border-color: #e0a800;
-      color: #333;
+      background: #e0a800;
+      color: #fff;
     }
     footer {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 20px;
       font-size: 14px;
-      color: #777;
+      color: #555;
     }
 
     /* Ícone flutuante do chatbot */
@@ -223,27 +181,20 @@
 </head>
 <body>
 
-  <div class="main-content">
-    <div class="menu-container">
-      <header>
-        <h1>Painel de Ferramentas Técnicas</h1>
-        <p>Selecione um dos simuladores abaixo para iniciar.</p>
-      </header>
-
-      <ul class="menu-list">
-        <li class="menu-item"><a href="guia_atendimento.html" class="menu-link" target="_blank"><span><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</span></a></li>
-        <li class="menu-item"><a href="desligamento.html" class="menu-link" target="_blank"><span><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</span></a></li>
-        <li class="menu-item"><a href="abertura.html" class="menu-link" target="_blank"><span><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</span></a></li>
-        <li class="menu-item"><a href="troca_de_placa.html" class="menu-link" target="_blank"><span><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</span></a></li>
-        <li class="menu-item"><a href="capiturador.html" class="menu-link" target="_blank"><span><i class="fas fa-video"></i> Fluxograma para Instalação de capturador</span></a></li>
-        <li class="menu-item"><a href="universidade_suporte.html" class="menu-link" target="_blank"><span><i class="fas fa-graduation-cap"></i> Universidade do Suporte</span></a></li>
-        <li class="menu-item"><a href="gerenciar_base.html" class="menu-link management-link"><span><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</span></a></li>
-      </ul>
-
-      <footer>
-        <p>Central de Recursos para Suporte N1</p>
-      </footer>
-    </div>
+  <div class="container">
+    <h1>Base de Conhecimento - N2 VSoft</h1>
+    <ul>
+      <li><a href="guia_atendimento.html" target="_blank"><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</a></li>
+      <li><a href="desligamento.html" target="_blank"><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</a></li>
+      <li><a href="abertura.html" target="_blank"><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</a></li>
+      <li><a href="troca_de_placa.html" target="_blank"><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</a></li>
+      <li><a href="capiturador.html" target="_blank"><i class="fas fa-video"></i> Fluxograma para Instalação de Capturador</a></li>
+      <li><a href="universidade_suporte.html" target="_blank"><i class="fas fa-graduation-cap"></i> Universidade do Suporte</a></li>
+      <li><a href="gerenciar_base.html" class="management-link" target="_blank"><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</a></li>
+    </ul>
+    <footer>
+      <p>Central de Recursos para Suporte N1</p>
+    </footer>
   </div>
 
   <!-- Ícone flutuante do chatbot -->
@@ -274,9 +225,6 @@
     const chatbotIcon = document.getElementById('chatbot-icon');
     const chatbotModal = document.getElementById('chatbot-modal');
     const chatbotClose = document.getElementById('chatbot-close');
-    const sendButton = document.getElementById('send-button');
-    const chatInput = document.getElementById('chat-input');
-    const chatMessages = document.getElementById('chatbot-messages');
 
     // Abrir chatbot
     chatbotIcon.addEventListener('click', () => {
@@ -295,7 +243,12 @@
       }
     });
 
-    // Função para adicionar mensagens
+    // --- Lógica que você pediu para aplicar ---
+    const sendButton = document.getElementById('send-button');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chatbot-messages');
+
+    // Função para adicionar mensagens ao chat
     function addMessage(text, sender = 'user') {
       const bubble = document.createElement('div');
       bubble.classList.add('message-bubble');
@@ -305,7 +258,7 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Função de resposta do bot (simulada)
+    // Função para simular resposta do bot
     function botResponse(userText) {
       let response = "Desculpe, ainda não sei responder isso.";
       if (userText.toLowerCase().includes("obd")) {
@@ -314,13 +267,13 @@
       addMessage(response, 'bot');
     }
 
-    // Enviar mensagem
+    // Ação do botão enviar
     sendButton.addEventListener('click', () => {
       const text = chatInput.value.trim();
       if (text) {
         addMessage(text, 'user');
         chatInput.value = '';
-        setTimeout(() => botResponse(text), 500);
+        setTimeout(() => botResponse(text), 500); // simula atraso de resposta
       }
     });
 
