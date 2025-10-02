@@ -1,264 +1,520 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu Principal - Ferramentas de Suporte Técnico</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #eef2f5;
-      color: #333;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
-    .main-content {
-      display: flex;
-      gap: 30px;
-      max-width: 1100px;
-      width: 100%;
-    }
-    .menu-container {
-      flex: 1;
-      max-width: 700px;
-      background-color: #ffffff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-    header {
-      text-align: center;
-      margin-bottom: 35px;
-      border-bottom: 2px solid #0056b3;
-      padding-bottom: 20px;
-    }
-    header h1 {
-      color: #0056b3;
-      margin: 0;
-      font-size: 28px;
-    }
-    header p {
-      margin: 8px 0 0;
-      color: #555;
-      font-size: 16px;
-    }
-    .menu-list { list-style: none; padding: 0; margin: 0; }
-    .menu-item { margin-bottom: 18px; }
-    .menu-link {
-      display: block;
-      padding: 20px;
-      background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-      color: #343a40;
-      text-decoration: none;
-      border-radius: 8px;
-      border: 1px solid #dee2e6;
-      font-weight: 600;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .menu-link:before {
-      content: '→';
-      position: absolute;
-      left: 20px;
-      opacity: 0.5;
-      transition: all 0.3s ease;
-    }
-    .menu-link span { margin-left: 25px; display: block; }
-    .menu-link:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
-      border-color: #0056b3;
-      color: #0056b3;
-    }
-    .menu-link:hover:before { transform: translateX(5px); opacity: 1; }
-    .management-link { background-color: #ffc107; color: #333; border: 1px solid #ffc107; text-align: center; margin-top: 20px; }
-    .management-link:hover { background-color: #e0a800; border-color: #e0a800; color: #333; }
-    footer { text-align: center; margin-top: 30px; font-size: 14px; color: #777; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - Ferramentas de Suporte Técnico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variáveis CSS para cores */
+        :root {
+            --dark-blue-bg: #1a202c; /* Azul escuro fosco */
+            --light-bg: #eef2f5;
+            --white: #ffffff;
+            --primary-blue: #0056b3;
+            --secondary-green: #28a745;
+            --text-color: #333;
+            --light-text-color: #555;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-dark: rgba(0, 86, 179, 0.15);
+        }
 
-    /* --- Chatbot (visual anterior aplicado) --- */
-    .chatbot-container {
-      width: 350px;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      min-height: 500px;
-    }
-    .chatbot-header {
-      text-align: center;
-      color: #28a745;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #28a745;
-    }
-    .chatbot-messages {
-      flex-grow: 1;
-      overflow-y: auto;
-      max-height: 400px;
-      padding-right: 10px;
-      margin-bottom: 15px;
-      border-bottom: 1px solid #ccc;
-    }
-    .message-bubble {
-      padding: 10px 15px;
-      border-radius: 15px;
-      margin-bottom: 10px;
-      max-width: 85%;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-    .user-message {
-      background-color: #007bff;
-      color: white;
-      margin-left: auto;
-    }
-    .bot-message {
-      background-color: #e9ecef;
-      color: #333;
-      margin-right: auto;
-    }
-    .chatbot-input-area {
-      display: flex;
-      gap: 10px;
-    }
-    #chat-input {
-      flex-grow: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    #send-button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #send-button:hover { background-color: #218838; }
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0056b3;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 2s linear infinite;
-      display: none;
-      margin: 10px auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    @media (max-width: 1000px) {
-      .main-content { flex-direction: column; align-items: center; }
-      .menu-container, .chatbot-container { max-width: 600px; width: 100%; margin-bottom: 20px; }
-      .chatbot-container { min-height: 400px; }
-    }
-  </style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark-blue-bg); /* Fundo azul escuro fosco */
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease; /* Transição suave para o fundo */
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .menu-container {
+            flex: 1;
+            max-width: 700px;
+            background-color: var(--white); /* Menu principal branco */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
+
+        /* Estilos do Menu */
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 20px;
+        }
+        header h1 {
+            color: var(--primary-blue);
+            margin: 0;
+            font-size: 28px;
+        }
+        header p {
+            margin: 8px 0 0;
+            color: var(--light-text-color);
+            font-size: 16px;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu-item {
+            margin-bottom: 18px;
+        }
+        .menu-link {
+            display: block;
+            padding: 20px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-link:before {
+            content: '→';
+            position: absolute;
+            left: 20px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .menu-link span {
+            margin-left: 25px;
+            display: block;
+        }
+        .menu-link:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 6px 15px var(--shadow-dark);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        .menu-link:hover:before {
+            transform: translateX(5px);
+            opacity: 1;
+        }
+        .management-link {
+            background-color: #ffc107; /* Amarelo de alerta */
+            color: var(--text-color);
+            border: 1px solid #ffc107;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .management-link:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+            color: var(--text-color);
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        /* --- Ícone do Chatbot --- */
+        .chatbot-icon-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001; /* Acima de tudo, mas o modal fica acima dele */
+        }
+        .chatbot-icon {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .chatbot-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            background-color: #218838;
+        }
+
+        /* --- Modal do Chatbot (Tela Cheia) --- */
+        .chatbot-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Fundo mais escuro para o modal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Garante que o modal esteja acima de tudo */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .chatbot-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .chatbot-container {
+            width: 90%; /* Ocupa 90% da largura da tela */
+            max-width: 800px; /* Largura máxima para o chatbot no modal */
+            height: 90%; /* Ocupa 90% da altura da tela */
+            max-height: 700px; /* Altura máxima para o chatbot no modal */
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-out;
+        }
+        .chatbot-modal-overlay.active .chatbot-container {
+            transform: scale(1);
+        }
+
+        .chatbot-header {
+            text-align: center;
+            color: var(--secondary-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-green);
+        }
+        .chatbot-header h2 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .chatbot-header small {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .chatbot-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px; /* Espaço para a scrollbar */
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: var(--text-color);
+            margin-right: auto;
+        }
+        .chatbot-input-area {
+            display: flex;
+            gap: 10px;
+            padding-top: 15px;
+        }
+        #chat-input {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        #send-button {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        #send-button:hover {
+            background-color: #218838;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+            display: none;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Botão de fechar do modal */
+        .close-chatbot-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5em;
+            color: #aaa;
+            cursor: pointer;
+            border: none;
+            background: none;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+        .close-chatbot-button:hover {
+            color: #555;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1000px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .menu-container {
+                max-width: 90%; /* Ajusta para mobile */
+                padding: 30px;
+            }
+            .chatbot-icon-container {
+                bottom: 20px;
+                right: 20px;
+            }
+            .chatbot-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            .chatbot-container {
+                padding: 20px;
+                width: 95%; /* Ocupa mais largura em mobile */
+                height: 95%;
+            }
+            .chatbot-header h2 {
+                font-size: 1.5em;
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .menu-container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
+            .menu-link {
+                font-size: 16px;
+                padding: 15px;
+            }
+            .menu-link span {
+                margin-left: 20px;
+            }
+            .chatbot-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="main-content">
-    <div class="menu-container">
-      <header>
-        <h1>Painel de Ferramentas Técnicas</h1>
-        <p>Selecione um dos simuladores abaixo para iniciar.</p>
-      </header>
-      <ul class="menu-list">
-        <li class="menu-item"><a href="guia_atendimento.html" class="menu-link" target="_blank"><span><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</span></a></li>
-        <li class="menu-item"><a href="desligamento.html" class="menu-link" target="_blank"><span><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</span></a></li>
-        <li class="menu-item"><a href="abertura.html" class="menu-link" target="_blank"><span><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</span></a></li>
-        <li class="menu-item"><a href="troca_de_placa.html" class="menu-link" target="_blank"><span><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</span></a></li>
-        <li class="menu-item"><a href="capiturador.html" class="menu-link" target="_blank"><span><i class="fas fa-video"></i> Fluxograma para Instalação de capturador</span></a></li>
-        <li class="menu-item"><a href="universidade_suporte.html" class="menu-link" target="_blank"><span><i class="fas fa-graduation-cap"></i> Universidade do Suporte</span></a></li>
-        <li class="menu-item"><a href="gerenciar_base.html" class="menu-link management-link"><span><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</span></a></li>
-      </ul>
-      <footer><p>Central de Recursos para Suporte N1</p></footer>
+    <div class="main-content">
+        <div class="menu-container">
+            <header>
+                <h1>Painel de Ferramentas Técnicas</h1>
+                <p>Selecione um dos simuladores abaixo para iniciar.</p>
+            </header>
+
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <a href="guia_atendimento.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="desligamento.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="abertura.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="troca_de_placa.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="capiturador.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-video"></i> Fluxograma para Instalação de capturador</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="universidade_suporte.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-graduation-cap"></i> Universidade do Suporte</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="gerenciar_base.html" class="menu-link management-link">
+                        <span><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</span>
+                    </a>
+                </li>
+            </ul>
+
+            <footer>
+                <p>Central de Recursos para Suporte N1</p>
+            </footer>
+        </div>
     </div>
 
-    <!-- Chatbot -->
-    <div class="chatbot-container">
-      <div class="chatbot-header">
-        <h2><i class="fas fa-robot"></i> Chatbot Base de Conhecimento</h2>
-        <small>Pergunte sobre erros, processos ou palavras-chave.</small>
-      </div>
-      <div class="chatbot-messages" id="chatbot-messages">
-        <div class="message-bubble bot-message">Olá! Sou seu assistente de Suporte N1. Como posso te ajudar hoje?</div>
-      </div>
-      <div class="loader" id="loader"></div>
-      <div class="chatbot-input-area">
-        <input type="text" id="chat-input" placeholder="Digite sua pergunta...">
-        <button id="send-button"><i class="fas fa-paper-plane"></i></button>
-      </div>
+    <div class="chatbot-icon-container">
+        <div class="chatbot-icon" id="openChatbotButton" title="Abrir Chatbot">
+            <i class="fas fa-robot"></i>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const BACKEND_URL = 'https://basen1-new.vercel.app';
-    const messagesDiv = document.getElementById('chatbot-messages');
-    const inputField = document.getElementById('chat-input');
-    const sendButton = document.getElementById('send-button');
-    const loader = document.getElementById('loader');
+    <div class="chatbot-modal-overlay" id="chatbotModal">
+        <div class="chatbot-container">
+            <button class="close-chatbot-button" id="closeChatbotButton">&times;</button>
+            <div class="chatbot-header">
+                <h2><i class="fas fa-robot"></i> Chatbot Base de Conhecimento</h2>
+                <small>Pergunte sobre erros, processos ou palavras-chave.</small>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message-bubble bot-message">Olá! Sou seu assistente de Suporte N1. Como posso te ajudar hoje? Tente buscar por **Erro 060** ou **Regras RN**.</div>
+            </div>
+            <div class="loader" id="loader"></div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeypress="if(event.keyCode == 13) document.getElementById('send-button').click()">
+                <button id="send-button" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
-    function appendMessage(text, sender) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('message-bubble');
-      bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-      bubble.innerHTML = text;
-      messagesDiv.appendChild(bubble);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+    <script>
+        // ⚠️ ATENÇÃO: Use a URL do seu projeto Vercel para o backend
+        const BACKEND_URL = 'https://basen1-new.vercel.app'; // Atualize se necessário
 
-    async function sendMessage() {
-      const userText = inputField.value.trim();
-      if (userText === '') return;
+        const messagesDiv = document.getElementById('chatbot-messages');
+        const inputField = document.getElementById('chat-input');
+        const loader = document.getElementById('loader');
+        const openChatbotButton = document.getElementById('openChatbotButton');
+        const closeChatbotButton = document.getElementById('closeChatbotButton');
+        const chatbotModal = document.getElementById('chatbotModal');
 
-      appendMessage(userText, 'user');
-      inputField.value = '';
-      loader.style.display = 'block';
+        function appendMessage(text, sender) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble');
+            bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+            // Para renderizar negrito de **texto**
+            bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            messagesDiv.appendChild(bubble);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll para o final
+        }
 
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: userText })
+        async function sendMessage() {
+            const userText = inputField.value.trim();
+            if (userText === '') return;
+
+            appendMessage(userText, 'user');
+            inputField.value = '';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: userText })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    let botResponseText;
+
+                    if (data.results && data.results.length > 0) {
+                        botResponseText = 'Encontrei as seguintes informações na Base de Conhecimento:\n\n';
+                        data.results.forEach((item, index) => {
+                            botResponseText += `${index + 1}. **${item.title}** (${item.estado || 'Geral'})\nConteúdo: ${item.content}\n\n`;
+                        });
+                    } else {
+                        botResponseText = `Desculpe, não encontrei nada na base de conhecimento para a busca: "**${userText}**". Tente refinar sua pergunta ou use palavras-chave mais específicas.`;
+                    }
+                    
+                    appendMessage(botResponseText, 'bot');
+
+                } else {
+                    appendMessage('Erro ao comunicar com o servidor da base de dados. Tente novamente mais tarde.', 'bot');
+                }
+
+            } catch (error) {
+                console.error('Erro de rede/API:', error);
+                appendMessage('Erro de conexão. Verifique se o backend está ativo.', 'bot');
+            } finally {
+                loader.style.display = 'none';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        // --- Lógica do Modal do Chatbot ---
+        openChatbotButton.addEventListener('click', () => {
+            chatbotModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Impede o scroll do body quando o modal está aberto
+            inputField.focus(); // Foca no input do chat
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          let botResponseText;
+        closeChatbotButton.addEventListener('click', () => {
+            chatbotModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura o scroll do body
+        });
 
-          if (data.results && data.results.length > 0) {
-            botResponseText = "<b>Encontrei as seguintes informações na Base de Conhecimento:</b><br><br>";
-            data.results.forEach((item, index) => {
-              botResponseText += `<b>${index + 1}. ${item.title}</b> (${item.estado || 'Geral'})<br>${item.content}<br><br>`;
-            });
-          } else {
-            botResponseText = `Desculpe, não encontrei nada para: <b>"${userText}"</b>.`;
-          }
-          appendMessage(botResponseText, 'bot');
-        } else {
-          appendMessage('⚠️ Erro ao comunicar com o servidor.', 'bot');
-        }
-      } catch (error) {
-        console.error(error);
-        appendMessage('❌ Erro de conexão com o backend.', 'bot');
-      } finally {
-        loader.style.display = 'none';
-      }
-    }
+        // Fechar modal ao clicar fora do conteúdo
+        chatbotModal.addEventListener('click', (event) => {
+            if (event.target === chatbotModal) {
+                chatbotModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
 
-    sendButton.addEventListener('click', sendMessage);
-    inputField.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-  </script>
+        // Fechar modal com a tecla ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && chatbotModal.classList.contains('active')) {
+                chatbotModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
 </body>
 </html>
