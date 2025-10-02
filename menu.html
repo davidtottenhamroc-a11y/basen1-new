@@ -1,284 +1,654 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Técnico - Suporte N1</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #007bff; /* fundo azul */
-      color: #333;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - Ferramentas de Suporte Técnico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variáveis CSS para cores */
+        :root {
+            --dark-blue-bg: #1a202c; /* Azul escuro fosco */
+            --light-bg: #eef2f5;
+            --white: #ffffff;
+            --primary-blue: #0056b3;
+            --secondary-green: #28a745;
+            --text-color: #333;
+            --light-text-color: #555;
+            --border-color: #dee2e6;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-dark: rgba(0, 86, 179, 0.15);
+        }
 
-    /* --- Container do menu --- */
-    .menu-container {
-      flex: 1;
-      max-width: 800px;
-      background-color: #ffffff;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      border-bottom: 2px solid #0056b3;
-      padding-bottom: 20px;
-    }
-    header h1 {
-      color: #0056b3;
-      margin: 0;
-      font-size: 28px;
-    }
-    header p { color: #555; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark-blue-bg); /* Fundo azul escuro fosco */
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease; /* Transição suave para o fundo */
+        }
 
-    .menu-list { list-style: none; padding: 0; margin: 0; }
-    .menu-item { margin-bottom: 18px; }
-    .menu-link {
-      display: block;
-      padding: 18px;
-      background: #f8f9fa;
-      color: #343a40;
-      text-decoration: none;
-      border-radius: 10px;
-      border: 1px solid #dee2e6;
-      font-weight: 600;
-      font-size: 18px;
-      transition: all 0.3s ease;
-    }
-    .menu-link:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 15px rgba(0, 86, 179, 0.25);
-      border-color: #0056b3;
-      color: #0056b3;
-    }
-    .management-link {
-      background-color: #ffc107;
-      text-align: center;
-    }
+        .main-content {
+            display: flex;
+            gap: 30px;
+            max-width: 1100px;
+            width: 100%;
+        }
 
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 14px;
-      color: #777;
-    }
+        .menu-container {
+            flex: 1;
+            max-width: 700px;
+            background-color: var(--white); /* Menu principal branco */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
 
-    /* --- Botão flutuante do Chatbot --- */
-    .chatbot-toggle {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 15px 18px;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      font-size: 22px;
-      transition: transform 0.2s;
-      z-index: 1000;
-    }
-    .chatbot-toggle:hover { transform: scale(1.1); }
+        /* Estilos do Menu */
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 20px;
+        }
+        header h1 {
+            color: var(--primary-blue);
+            margin: 0;
+            font-size: 28px;
+        }
+        header p {
+            margin: 8px 0 0;
+            color: var(--light-text-color);
+            font-size: 16px;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu-item {
+            margin-bottom: 18px;
+        }
+        .menu-link {
+            display: block;
+            padding: 20px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-link:before {
+            content: '→';
+            position: absolute;
+            left: 20px;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .menu-link span {
+            margin-left: 25px;
+            display: block;
+        }
+        .menu-link:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 6px 15px var(--shadow-dark);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        .menu-link:hover:before {
+            transform: translateX(5px);
+            opacity: 1;
+        }
+        .management-link {
+            background-color: #ffc107; /* Amarelo de alerta */
+            color: var(--text-color);
+            border: 1px solid #ffc107;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .management-link:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+            color: var(--text-color);
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
 
-    /* --- Janela do Chatbot (overlay) --- */
-    .chatbot-overlay {
-      position: fixed;
-      bottom: 90px;
-      right: 25px;
-      width: 350px;
-      height: 500px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      display: none; /* escondido por padrão */
-      flex-direction: column;
-      z-index: 999;
-      overflow: hidden;
-      animation: slideUp 0.3s ease-out;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+        /* --- Ícone do Chatbot --- */
+        .chatbot-icon-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1001; /* Acima de tudo, mas o modal fica acima dele */
+        }
+        .chatbot-icon {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .chatbot-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            background-color: #218838;
+        }
 
-    .chatbot-header {
-      background-color: #28a745;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-weight: bold;
-    }
-    .chatbot-messages {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 15px;
-      background: #f9f9f9;
-    }
-    .message-bubble {
-      padding: 10px 14px;
-      border-radius: 15px;
-      margin-bottom: 10px;
-      max-width: 85%;
-      word-wrap: break-word;
-    }
-    .user-message {
-      background-color: #007bff;
-      color: white;
-      margin-left: auto;
-    }
-    .bot-message {
-      background-color: #e9ecef;
-      color: #333;
-      margin-right: auto;
-    }
-    .chatbot-input-area {
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      border-top: 1px solid #ccc;
-      background: white;
-    }
-    #chat-input {
-      flex-grow: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    #send-button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #send-button:hover { background-color: #218838; }
+        /* --- Modal do Chatbot (Tela Cheia) --- */
+        .chatbot-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Fundo mais escuro para o modal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Garante que o modal esteja acima de tudo */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .chatbot-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .chatbot-container {
+            width: 90%; /* Ocupa 90% da largura da tela */
+            max-width: 800px; /* Largura máxima para o chatbot no modal */
+            height: 90%; /* Ocupa 90% da altura da tela */
+            max-height: 700px; /* Altura máxima para o chatbot no modal */
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-out;
+        }
+        .chatbot-modal-overlay.active .chatbot-container {
+            transform: scale(1);
+        }
 
-    .loader {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #0056b3;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      animation: spin 1s linear infinite;
-      display: none;
-      margin: 10px auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .chatbot-header {
+            text-align: center;
+            color: var(--secondary-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-green);
+        }
+        .chatbot-header h2 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .chatbot-header small {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .chatbot-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px; /* Espaço para a scrollbar */
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc;
+        }
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: var(--text-color);
+            margin-right: auto;
+        }
 
-  </style>
+        /* --- Novos estilos para os cards de resposta do bot --- */
+        .bot-response-card {
+            background-color: #f8fcf8; /* Fundo bem clarinho para o card */
+            border: 1px solid #d4edda; /* Borda suave verde */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-response-card h4 {
+            color: var(--secondary-green);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bot-response-card h4 .state-tag {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            font-size: 0.7em;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: normal;
+        }
+        .bot-response-card pre { /* Para exibir o conteúdo pré-formatado (listas, etc.) */
+            background-color: #e9f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap; /* Quebra linha para conteúdo longo */
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #388e3c;
+            border-left: 3px solid var(--secondary-green);
+            margin-top: 10px;
+        }
+        .bot-response-card p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .bot-response-card ul, .bot-response-card ol {
+            margin: 10px 0 10px 20px;
+            padding: 0;
+            font-size: 0.9em;
+            color: #444;
+        }
+        .bot-response-card li {
+            margin-bottom: 5px;
+        }
+        .bot-response-card strong {
+            color: var(--primary-blue);
+        }
+        .bot-response-card .alert-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            color: #664d03;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bot-response-card .alert-box i {
+            color: #ffc107;
+            font-size: 1.2em;
+        }
+
+
+        .chatbot-input-area {
+            display: flex;
+            gap: 10px;
+            padding-top: 15px;
+        }
+        #chat-input {
+            flex-grow: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        #send-button {
+            background-color: var(--secondary-green);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        #send-button:hover {
+            background-color: #218838;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+            display: none;
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Botão de fechar do modal */
+        .close-chatbot-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2.5em;
+            color: #aaa;
+            cursor: pointer;
+            border: none;
+            background: none;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+        .close-chatbot-button:hover {
+            color: #555;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1000px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .menu-container {
+                max-width: 90%; /* Ajusta para mobile */
+                padding: 30px;
+            }
+            .chatbot-icon-container {
+                bottom: 20px;
+                right: 20px;
+            }
+            .chatbot-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            .chatbot-container {
+                padding: 20px;
+                width: 95%; /* Ocupa mais largura em mobile */
+                height: 95%;
+            }
+            .chatbot-header h2 {
+                font-size: 1.5em;
+            }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .menu-container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 24px;
+            }
+            .menu-link {
+                font-size: 16px;
+                padding: 15px;
+            }
+            .menu-link span {
+                margin-left: 20px;
+            }
+            .chatbot-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="menu-container">
-    <header>
-      <h1>Painel de Ferramentas Técnicas</h1>
-      <p>Selecione um dos simuladores abaixo para iniciar.</p>
-    </header>
+    <div class="main-content">
+        <div class="menu-container">
+            <header>
+                <h1>Painel de Ferramentas Técnicas</h1>
+                <p>Selecione um dos simuladores abaixo para iniciar.</p>
+            </header>
 
-    <ul class="menu-list">
-      <li class="menu-item"><a href="guia_atendimento.html" class="menu-link"><i class="fas fa-book"></i> Guia Interativo</a></li>
-      <li class="menu-item"><a href="desligamento.html" class="menu-link"><i class="fas fa-car-crash"></i> Desligamento de Aulas (RN)</a></li>
-      <li class="menu-item"><a href="abertura.html" class="menu-link"><i class="fas fa-sign-in-alt"></i> Abertura de Aula</a></li>
-      <li class="menu-item"><a href="troca_de_placa.html" class="menu-link"><i class="fas fa-exchange-alt"></i> Troca de Placa</a></li>
-      <li class="menu-item"><a href="capiturador.html" class="menu-link"><i class="fas fa-video"></i> Instalação de Capturador</a></li>
-      <li class="menu-item"><a href="universidade_suporte.html" class="menu-link"><i class="fas fa-graduation-cap"></i> Universidade do Suporte</a></li>
-      <li class="menu-item"><a href="gerenciar_base.html" class="menu-link management-link"><i class="fas fa-database"></i> Gerenciar Base</a></li>
-    </ul>
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <a href="guia_atendimento.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-book"></i> Guia Interativo de Atendimento ao CFC</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="desligamento.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-car-crash"></i> Simulador de Análise de Desligamento de Aulas (RN)</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="abertura.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-sign-in-alt"></i> Fluxograma Técnico de Abertura de Aula</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="troca_de_placa.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-exchange-alt"></i> Fluxograma para Troca de Placa</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="capiturador.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-video"></i> Fluxograma para Instalação de capturador</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="universidade_suporte.html" class="menu-link" target="_blank">
+                        <span><i class="fas fa-graduation-cap"></i> Universidade do Suporte</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="gerenciar_base.html" class="menu-link management-link">
+                        <span><i class="fas fa-database"></i> Gerenciar Base de Conhecimento</span>
+                    </a>
+                </li>
+            </ul>
 
-    <footer>
-      <p>Central de Recursos para Suporte N1</p>
-    </footer>
-  </div>
-
-  <!-- Botão Flutuante -->
-  <button class="chatbot-toggle" id="chatbot-toggle"><i class="fas fa-comment-alt"></i></button>
-
-  <!-- Chatbot Overlay -->
-  <div class="chatbot-overlay" id="chatbot-overlay">
-    <div class="chatbot-header">🤖 Chatbot Base de Conhecimento</div>
-    <div class="chatbot-messages" id="chatbot-messages">
-      <div class="message-bubble bot-message">Olá! Como posso ajudar? Pergunte algo como <b>Erro 060</b> ou <b>Regras RN</b>.</div>
+            <footer>
+                <p>Central de Recursos para Suporte N1</p>
+            </footer>
+        </div>
     </div>
-    <div class="loader" id="loader"></div>
-    <div class="chatbot-input-area">
-      <input type="text" id="chat-input" placeholder="Digite sua pergunta...">
-      <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+
+    <div class="chatbot-icon-container">
+        <div class="chatbot-icon" id="openChatbotButton" title="Abrir Chatbot">
+            <i class="fas fa-robot"></i>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const BACKEND_URL = 'https://basen1-new.vercel.app';
-    const messagesDiv = document.getElementById('chatbot-messages');
-    const inputField = document.getElementById('chat-input');
-    const loader = document.getElementById('loader');
+    <div class="chatbot-modal-overlay" id="chatbotModal">
+        <div class="chatbot-container">
+            <button class="close-chatbot-button" id="closeChatbotButton">&times;</button>
+            <div class="chatbot-header">
+                <h2><i class="fas fa-robot"></i> Chatbot Base de Conhecimento</h2>
+                <small>Pergunte sobre erros, processos ou palavras-chave.</small>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message-bubble bot-message">Olá! Sou seu assistente de Suporte N1. Como posso te ajudar hoje? Tente buscar por **Erro 060** ou **Regras RN**.</div>
+            </div>
+            <div class="loader" id="loader"></div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chat-input" placeholder="Digite sua pergunta..." onkeypress="if(event.keyCode == 13) document.getElementById('send-button').click()">
+                <button id="send-button" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
-    // Botão toggle
-    const toggleBtn = document.getElementById('chatbot-toggle');
-    const chatbotOverlay = document.getElementById('chatbot-overlay');
-    toggleBtn.addEventListener('click', () => {
-      chatbotOverlay.style.display = chatbotOverlay.style.display === 'flex' ? 'none' : 'flex';
-    });
+    <script>
+        // ⚠️ ATENÇÃO: Use a URL do seu projeto Vercel para o backend
+        const BACKEND_URL = 'https://basen1-new.vercel.app'; // Atualize se necessário
 
-    function appendMessage(text, sender) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('message-bubble');
-      bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-      bubble.innerHTML = text;
-      messagesDiv.appendChild(bubble);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
+        const messagesDiv = document.getElementById('chatbot-messages');
+        const inputField = document.getElementById('chat-input');
+        const loader = document.getElementById('loader');
+        const openChatbotButton = document.getElementById('openChatbotButton');
+        const closeChatbotButton = document.getElementById('closeChatbotButton');
+        const chatbotModal = document.getElementById('chatbotModal');
 
-    async function sendMessage() {
-      const userText = inputField.value.trim();
-      if (userText === '') return;
+        function appendMessage(text, sender, isBotResponseCard = false, itemData = null) {
+            if (isBotResponseCard && itemData) {
+                const cardContainer = document.createElement('div');
+                cardContainer.classList.add('message-bubble', 'bot-message'); // Mantém o estilo de bolha para posicionamento
+                cardContainer.style.backgroundColor = 'transparent'; // Remove o fundo da bolha para o card
+                cardContainer.style.boxShadow = 'none'; // Remove sombra da bolha
+                cardContainer.style.padding = '0'; // Remove padding da bolha
+                cardContainer.style.maxWidth = '100%'; // Ocupa a largura total para o card
 
-      appendMessage(userText, 'user');
-      inputField.value = '';
-      loader.style.display = 'block';
+                const card = document.createElement('div');
+                card.classList.add('bot-response-card');
 
-      try {
-        const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: userText })
+                const titleElement = document.createElement('h4');
+                titleElement.innerHTML = `<i class="fas fa-info-circle"></i> ${itemData.title}`;
+                if (itemData.estado) {
+                    const stateTag = document.createElement('span');
+                    stateTag.classList.add('state-tag');
+                    stateTag.innerText = itemData.estado;
+                    titleElement.appendChild(stateTag);
+                }
+                card.appendChild(titleElement);
+
+                // Dividir o conteúdo em linhas para processar listas e negrito
+                const contentLines = itemData.content.split('\n');
+                let inList = false;
+                let listElement = null;
+
+                contentLines.forEach(line => {
+                    line = line.trim();
+                    if (line.startsWith('1.') || line.startsWith('•') || line.startsWith('-')) { // Detecta início de lista ordenada ou não ordenada
+                        if (!inList) {
+                            listElement = document.createElement(line.startsWith('1.') ? 'ol' : 'ul');
+                            card.appendChild(listElement);
+                            inList = true;
+                        }
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = line.replace(/^(1\.|•|-)\s*/, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        listElement.appendChild(listItem);
+                    } else if (line.startsWith('**') && line.endsWith('**') && line.includes(':')) { // Detecta alertas ou informações destacadas
+                        const alertBox = document.createElement('div');
+                        alertBox.classList.add('alert-box');
+                        alertBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}`;
+                        card.appendChild(alertBox);
+                        inList = false;
+                    } else if (line !== '') {
+                        if (inList) { // Se estava em lista mas a linha não é de lista, encerra a lista
+                            inList = false;
+                            listElement = null;
+                        }
+                        const p = document.createElement('p');
+                        p.innerHTML = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        card.appendChild(p);
+                    }
+                });
+
+                cardContainer.appendChild(card);
+                messagesDiv.appendChild(cardContainer);
+
+            } else {
+                const bubble = document.createElement('div');
+                bubble.classList.add('message-bubble');
+                bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                bubble.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                messagesDiv.appendChild(bubble);
+            }
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll para o final
+        }
+
+        async function sendMessage() {
+            const userText = inputField.value.trim();
+            if (userText === '') return;
+
+            appendMessage(userText, 'user');
+            inputField.value = '';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: userText })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.results && data.results.length > 0) {
+                        appendMessage('Encontrei as seguintes informações na Base de Conhecimento:', 'bot');
+                        data.results.forEach((item) => {
+                            appendMessage('', 'bot', true, item); // Passa itemData para criar o card
+                        });
+                    } else {
+                        appendMessage(`Desculpe, não encontrei nada na base de conhecimento para a busca: "**${userText}**". Tente refinar sua pergunta ou use palavras-chave mais específicas.`, 'bot');
+                    }
+                    
+                } else {
+                    appendMessage('Erro ao comunicar com o servidor da base de dados. Tente novamente mais tarde.', 'bot');
+                }
+
+            } catch (error) {
+                console.error('Erro de rede/API:', error);
+                appendMessage('Erro de conexão. Verifique se o backend está ativo.', 'bot');
+            } finally {
+                loader.style.display = 'none';
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        // --- Lógica do Modal do Chatbot ---
+        openChatbotButton.addEventListener('click', () => {
+            chatbotModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Impede o scroll do body quando o modal está aberto
+            inputField.focus(); // Foca no input do chat
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          let botResponseText;
+        closeChatbotButton.addEventListener('click', () => {
+            chatbotModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura o scroll do body
+        });
 
-          if (data.results && data.results.length > 0) {
-            botResponseText = "<b>Encontrei:</b><br><br>";
-            data.results.forEach((item, index) => {
-              botResponseText += `<b>${index + 1}. ${item.title}</b> (${item.estado || 'Geral'})<br>${item.content}<br><br>`;
-            });
-          } else {
-            botResponseText = `❌ Não encontrei nada para: <b>"${userText}"</b>.`;
-          }
-          appendMessage(botResponseText, 'bot');
-        } else {
-          appendMessage('⚠️ Erro no servidor.', 'bot');
-        }
-      } catch (err) {
-        appendMessage('❌ Erro de conexão com o backend.', 'bot');
-      } finally {
-        loader.style.display = 'none';
-      }
-    }
+        // Fechar modal ao clicar fora do conteúdo
+        chatbotModal.addEventListener('click', (event) => {
+            if (event.target === chatbotModal) {
+                chatbotModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
 
-    document.getElementById('send-button').addEventListener('click', sendMessage);
-    inputField.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-  </script>
+        // Fechar modal com a tecla ESC
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && chatbotModal.classList.contains('active')) {
+                chatbotModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
 </body>
 </html>
