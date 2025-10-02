@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BASE para N1 - VSoft</title>
+    <title>Base para N2 - VSoft</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* SEUS ESTILOS ATUAIS PERMANECEM OS MESMOS */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -648,7 +647,7 @@
         }
 
         // -------------------------------
-        // Função getBotResponse (CORRIGIDA - FILTRO POR ESTADO FUNCIONAL)
+        // Função getBotResponse (CORRIGIDA - BUSCA FLEXÍVEL)
         // -------------------------------
         function getBotResponse(message) {
             const estadoFilter = (document.getElementById('estado-filter')?.value || '').toUpperCase();
@@ -660,25 +659,19 @@
             const possibleState = normalized.split(/\s+/).find(w => stateTokens.includes(w));
             const effectiveState = (estadoFilter || (possibleState ? possibleState.toUpperCase() : '')).toUpperCase();
 
-            // Keywords EXCLUINDO tokens de estado (para evitar conflito)
-            let keywords = normalized.split(/\s+/).filter(w => 
-                w.length > 1 && 
-                !STOP_WORDS_PT.includes(w) && 
-                !stateTokens.includes(w) // Remove tokens de estado das keywords
-            );
+            // Keywords INCLUINDO tokens de estado (não remover mais)
+            let keywords = normalized.split(/\s+/).filter(w => w.length > 1 && !STOP_WORDS_PT.includes(w));
             
-            // Expandir sinônimos (sem tokens de estado)
+            // Expandir sinônimos (mantém os tokens de estado)
             keywords = expandTerms(keywords);
 
             // Salva para highlight/paginação
             lastQueryKeywords = keywords.slice();
 
-            // FILTRO POR ESTADO - CORREÇÃO PRINCIPAL
+            // Filtra pool por estado (se houver)
             let pool = memoriesIndex;
             if (effectiveState && effectiveState !== 'TODOS') {
-                pool = memoriesIndex.filter(m => 
-                    (m.estado || '').toUpperCase() === effectiveState
-                );
+                pool = memoriesIndex.filter(m => (m.estado || '').toUpperCase() === effectiveState);
             }
 
             // Se não há termos (usuário só abriu sem digitar), mostra últimos registros do estado
