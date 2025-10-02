@@ -584,6 +584,17 @@
         const chatbotModal = document.getElementById('chatbotModal');
         const estadoFilter = document.getElementById('estado-filter');
 
+        // Função para filtrar resultados por estado no frontend
+        function filterResultsByState(results, estado) {
+            if (!estado) return results;
+            
+            return results.filter(item => {
+                // Verifica se o item tem estado e se corresponde ao estado selecionado
+                const itemEstado = item.estado || '';
+                return itemEstado.toUpperCase() === estado.toUpperCase();
+            });
+        }
+
         function appendMessage(text, sender, isBotResponseCard = false, itemData = null) {
             if (isBotResponseCard && itemData) {
                 const cardContainer = document.createElement('div');
@@ -668,13 +679,13 @@
             loader.style.display = 'block';
 
             try {
-                // CORREÇÃO: Enviar o estado selecionado para o backend
+                // Enviar apenas a query para o backend
                 const requestBody = { 
-                    query: userText,
-                    estado: selectedEstado // Sempre enviar o estado, mesmo se for vazio
+                    query: userText
+                    // Não enviar estado - vamos filtrar no frontend
                 };
 
-                console.log('Enviando para backend:', requestBody); // Debug
+                console.log('Enviando para backend:', requestBody);
 
                 const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
                     method: 'POST',
@@ -685,10 +696,17 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    console.log('Resposta do backend:', data); // Debug
+                    console.log('Resposta completa do backend:', data);
                     
-                    if (data.results && data.results.length > 0) {
-                        let resultsMessage = `Encontrei ${data.results.length} resultado(s)`;
+                    // FILTRO NO FRONTEND: Aplicar filtro de estado nos resultados
+                    let filteredResults = data.results || [];
+                    if (selectedEstado) {
+                        filteredResults = filterResultsByState(filteredResults, selectedEstado);
+                        console.log(`Resultados após filtro (${selectedEstado}):`, filteredResults);
+                    }
+                    
+                    if (filteredResults.length > 0) {
+                        let resultsMessage = `Encontrei ${filteredResults.length} resultado(s)`;
                         if (selectedEstado) {
                             resultsMessage += ` para **${userText}** no estado de **${selectedEstado}**`;
                         } else {
@@ -696,17 +714,20 @@
                         }
                         appendMessage(resultsMessage, 'bot');
                         
-                        data.results.forEach((item) => {
+                        filteredResults.forEach((item) => {
                             appendMessage('', 'bot', true, item);
                         });
                     } else {
                         let noResultsMessage = `Desculpe, não encontrei nada na base de conhecimento`;
                         if (selectedEstado) {
                             noResultsMessage += ` para **${userText}** no estado de **${selectedEstado}**`;
+                            
+                            // Sugerir buscar em todos os estados se não encontrou no estado específico
+                            noResultsMessage += `. Tente selecionar "Todos os estados" para ampliar a busca.`;
                         } else {
                             noResultsMessage += ` para **${userText}** em todos os estados`;
+                            noResultsMessage += `. Tente refinar sua pergunta.`;
                         }
-                        noResultsMessage += `. Tente refinar sua pergunta ou selecione outro estado.`;
                         appendMessage(noResultsMessage, 'bot');
                     }
                     
