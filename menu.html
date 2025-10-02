@@ -10,7 +10,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #eef2f5;
       color: #333;
-      line-height: 1.6;
       margin: 0;
       padding: 20px;
       display: flex;
@@ -83,7 +82,7 @@
     .management-link:hover { background-color: #e0a800; border-color: #e0a800; color: #333; }
     footer { text-align: center; margin-top: 30px; font-size: 14px; color: #777; }
 
-    /* --- Chatbot --- */
+    /* --- Chatbot (visual anterior aplicado) --- */
     .chatbot-container {
       width: 350px;
       background-color: #ffffff;
@@ -115,16 +114,37 @@
       margin-bottom: 10px;
       max-width: 85%;
       word-wrap: break-word;
-      white-space: pre-wrap; /* preserva quebras de linha */
+      white-space: pre-wrap;
     }
-    .user-message { background-color: #007bff; color: white; margin-left: auto; }
-    .bot-message { background-color: #e9ecef; color: #333; margin-right: auto; }
-    .chatbot-input-area { display: flex; gap: 10px; }
+    .user-message {
+      background-color: #007bff;
+      color: white;
+      margin-left: auto;
+    }
+    .bot-message {
+      background-color: #e9ecef;
+      color: #333;
+      margin-right: auto;
+    }
+    .chatbot-input-area {
+      display: flex;
+      gap: 10px;
+    }
     #chat-input {
-      flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;
+      flex-grow: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
     #send-button {
-      background-color: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
     #send-button:hover { background-color: #218838; }
     .loader {
@@ -193,7 +213,7 @@
       const bubble = document.createElement('div');
       bubble.classList.add('message-bubble');
       bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-      bubble.innerHTML = text; // agora interpreta <b>, <br> etc.
+      bubble.innerHTML = text;
       messagesDiv.appendChild(bubble);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
@@ -223,7 +243,7 @@
               botResponseText += `<b>${index + 1}. ${item.title}</b> (${item.estado || 'Geral'})<br>${item.content}<br><br>`;
             });
           } else {
-            botResponseText = `Desculpe, não encontrei nada na base de conhecimento para: <b>"${userText}"</b>.`;
+            botResponseText = `Desculpe, não encontrei nada para: <b>"${userText}"</b>.`;
           }
           appendMessage(botResponseText, 'bot');
         } else {
