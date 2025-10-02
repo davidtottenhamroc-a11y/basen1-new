@@ -657,7 +657,13 @@
 
             const selectedEstado = estadoFilter.value;
 
-            appendMessage(userText, 'user');
+            // Mostra qual estado está sendo filtrado na mensagem do usuário
+            let userMessageText = userText;
+            if (selectedEstado) {
+                userMessageText += ` [Estado: ${selectedEstado}]`;
+            }
+            
+            appendMessage(userMessageText, 'user');
             inputField.value = '';
             loader.style.display = 'block';
 
@@ -677,16 +683,25 @@
                     const data = await response.json();
                     
                     if (data.results && data.results.length > 0) {
-                        appendMessage('Encontrei as seguintes informações na Base de Conhecimento:', 'bot');
+                        let resultsMessage = `Encontrei ${data.results.length} resultado(s)`;
+                        if (selectedEstado) {
+                            resultsMessage += ` para **${userText}** no estado de **${selectedEstado}**`;
+                        } else {
+                            resultsMessage += ` para **${userText}** em todos os estados`;
+                        }
+                        appendMessage(resultsMessage, 'bot');
+                        
                         data.results.forEach((item) => {
                             appendMessage('', 'bot', true, item);
                         });
                     } else {
-                        let noResultsMessage = `Desculpe, não encontrei nada na base de conhecimento para a busca: "**${userText}**"`;
+                        let noResultsMessage = `Desculpe, não encontrei nada na base de conhecimento`;
                         if (selectedEstado) {
-                            noResultsMessage += ` no estado de **${selectedEstado}**`;
+                            noResultsMessage += ` para **${userText}** no estado de **${selectedEstado}**`;
+                        } else {
+                            noResultsMessage += ` para **${userText}** em todos os estados`;
                         }
-                        noResultsMessage += `. Tente refinar sua pergunta ou selecione "Todos os estados".`;
+                        noResultsMessage += `. Tente refinar sua pergunta ou selecione outro estado.`;
                         appendMessage(noResultsMessage, 'bot');
                     }
                     
