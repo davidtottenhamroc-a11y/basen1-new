@@ -668,10 +668,13 @@
             loader.style.display = 'block';
 
             try {
-                const requestBody = { query: userText };
-                if (selectedEstado) {
-                    requestBody.estado = selectedEstado;
-                }
+                // CORREÇÃO: Enviar o estado selecionado para o backend
+                const requestBody = { 
+                    query: userText,
+                    estado: selectedEstado // Sempre enviar o estado, mesmo se for vazio
+                };
+
+                console.log('Enviando para backend:', requestBody); // Debug
 
                 const response = await fetch(`${BACKEND_URL}/api/search-knowledge`, {
                     method: 'POST',
@@ -681,6 +684,8 @@
 
                 if (response.ok) {
                     const data = await response.json();
+                    
+                    console.log('Resposta do backend:', data); // Debug
                     
                     if (data.results && data.results.length > 0) {
                         let resultsMessage = `Encontrei ${data.results.length} resultado(s)`;
@@ -706,7 +711,9 @@
                     }
                     
                 } else {
-                    appendMessage('Erro ao comunicar com o servidor da base de dados. Tente novamente mais tarde.', 'bot');
+                    const errorText = await response.text();
+                    console.error('Erro do backend:', response.status, errorText);
+                    appendMessage(`Erro ${response.status} ao comunicar com o servidor. Tente novamente mais tarde.`, 'bot');
                 }
 
             } catch (error) {
@@ -741,6 +748,11 @@
                 chatbotModal.classList.remove('active');
                 document.body.style.overflow = '';
             }
+        });
+
+        // Debug: Verificar se o estado está sendo capturado corretamente
+        estadoFilter.addEventListener('change', function() {
+            console.log('Estado selecionado:', this.value);
         });
     </script>
 </body>
