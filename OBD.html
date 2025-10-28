@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Interativo OBD ID - Cards</title>
+
+    <style>
+        /* Estilos Base */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5; /* Fundo mais suave */
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0px auto;
+        }
+
+        /* Estilos dos Cards (Grade) */
+        #card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .step-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 6px solid #28a745; /* Linha de destaque verde */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 150px;
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            color: #007bff;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-summary {
+            color: #555;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Estilos do Modal (Pop-up) */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.65); /* Overlay escuro */
+            backdrop-filter: blur(3px); /* Efeito de desfoque (opcional) */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-out; /* Animação de entrada */
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #d9534f; /* Cor de fechar */
+        }
+
+        /* Estilos do Conteúdo Detalhado no Modal */
+        #modal-title {
+            color: #007bff;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 5px;
+        }
+
+        #modal-body {
+            line-height: 1.6;
+            color: #333;
+            max-height: 70vh; /* Limita a altura do corpo para scroll */
+            overflow-y: auto;
+            padding-right: 15px; /* Espaço para a barra de rolagem */
+        }
+
+        #modal-body h3 {
+            color: #28a745;
+            margin-top: 25px;
+            border-left: 3px solid #28a745;
+            padding-left: 10px;
+        }
+        
+        #modal-body ul {
+            list-style: disc;
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        #modal-body img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 25px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animação */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guia Interativo de Instalação e Configuração do OBD ID</h1>
+        <p>Clique em qualquer cartão abaixo para ver o passo-a-passo detalhado.</p>
+    </header>
+
+    <main>
+        <div id="card-grid">
+            </div>
+    </main>
+
+    <div id="step-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Caminhos de imagem ajustados para a pasta 'img' e sequência de 1 a 14.png
+        const tutorialSteps = [
+            { 
+                id: 1, 
+                cardTitle: "1. Introdução e Objetivo", 
+                summary: "Entenda a função do OBD ID: Coleta de dados, Vínculo MAC/VIN e Registro no Super Prático.", 
+                title: "Introdução e Objetivo do OBD ID", 
+                content: `<p>O <strong>OBD ID</strong> é um aplicativo mobile responsável por:</p><ul><li>Realizar a coleta de dados.</li><li>Vincular de forma automatizada o Chassi (VIN) do veículo.</li><li>Vincular o endereço físico (MAC) da placa do dispositivo OBD II.</li><li>Registrar esses dados no cadastro do veículo no Super Prático.</li></ul><p>Este vínculo é essencial para associar o scanner a um veículo pertencente ao CFC e é realizado através da <strong>placa do veículo + CNPJ do CFC</strong>.</p>` 
+            },
+            { 
+                id: 2, 
+                cardTitle: "2. Instalação do Aplicativo", 
+                summary: "Baixe o arquivo .apk no módulo coletor e realize a instalação inicial do ObdID.", 
+                title: "Instalação do Aplicativo ObdID", 
+                content: `
+                    <p>Para começar, baixe o aplicativo <strong>ObdID</strong> no módulo coletor. Acesse o link: <a href="https://coletores-site.vercel.app/" target="_blank">https://coletores-site.vercel.app/</a></p>
+                    <p>Após o download do arquivo .apk, instale e clique em <strong>Abrir</strong>. Procure o botão **OBDID** na tela de download para baixar a versão desejada.</p>
+                    <p><em>(Referência: Figuras a, b, c do seu documento original)</em></p>
+                    <img src="img/1.png" alt="Tela de instalação do aplicativo ObdID." />
+                ` 
+            },
+            { 
+                id: 3, 
+                cardTitle: "3. Configuração Inicial e Estado", 
+                summary: "Acesse as configurações, selecione o Estado correto e confirme a ação com o sinal de verificação (✔).", 
+                title: "Configuração Inicial - Seleção do Estado", 
+                content: `
+                    <p>1. Acesse a configuração do aplicativo clicando no <strong>ícone de engrenagem</strong> na tela inicial (Canto superior direito).</p>
+                    <img src="img/2.png" alt="Tela inicial com o ícone de engrenagem destacado." />
+                    <p>2. Na nova tela, altere o <strong>Estado</strong> para corresponder ao estado cadastrado no seu scanner.</p>
+                    <img src="img/3.png" alt="Tela de seleção de estado." />
+                    <p>3. Confirme a ação clicando no <strong>sinal de verificação (✔)</strong>, localizado no canto superior direito da tela.</p>
+                ` 
+            },
+            { 
+                id: 4, 
+                cardTitle: "4. Login no ObdID", 
+                summary: "Utilize suas credenciais (login e senha) do painel SuperPrático para acessar o aplicativo.", 
+                title: "Login no Aplicativo", 
+                content: `
+                    <p>1. Insira seus dados de <strong>login e senha</strong>. Estes devem ser os mesmos utilizados no painel SuperPrático.</p>
+                    <p>2. Clique em <strong>"Entrar"</strong>.</p>
+                    <img src="img/4.png" alt="Tela de login do aplicativo ObdID." />
+                ` 
+            },
+            { 
+                id: 5, 
+                cardTitle: "5. Localizando o OBD II", 
+                summary: "Ative o Bluetooth, use o ícone de 'play' e observe a cor do sinal para garantir o pareamento ideal (Cor Verde).", 
+                title: "Localizando o Dispositivo OBD II (Scanner)", 
+                content: `
+                    <p>1. <strong>Ative o Bluetooth</strong> do seu dispositivo móvel.</p>
+                    <p>2. No aplicativo, clique no <strong>ícone de "play" (▶)</strong>, localizado no canto superior direito da tela.</p>
+                    <img src="img/5.png" alt="Tela principal com o ícone de Play destacado." />
+                    <p>O aplicativo escaneará, e a distância é indicada pela cor:</p>
+                    <ul>
+                        <li><strong>Vermelha:</strong> Dispositivo fora do alcance.</li>
+                        <li><strong>Azul:</strong> Sinal próximo.</li>
+                        <li><strong>Verde:</strong> Sinal perfeito, ideal para parear.</li>
+                    </ul>
+                    <img src="img/6.png" alt="Tela dos dispositivos localizados" />
+                ` 
+            },
+            { 
+                id: 6, 
+                cardTitle: "6. Associação do Dispositivo", 
+                summary: "Selecione o OBDII correto na lista, clique em 'CONFIRMAR' e valide o vínculo com o veículo.", 
+                title: "Associando o Dispositivo ao Veículo", 
+                content: `
+                    <p>1. Após localizar o dispositivo <strong>OBDII</strong> na lista, clique sobre ele e, em seguida, em <strong>"CONFIRMAR"</strong>.</p>
+                    <img src="img/7.png" alt="Seleção do dispositivo OBDII na lista." />
+                    <p>2. Na caixa de diálogo de confirmação, confira as informações e clique em <strong>"SIM"</strong> para associar o dispositivo a um veículo.</p>
+                    <img src="img/8.png" alt="Confirmação de associação do dispositivo." />
+                ` 
+            },
+            { 
+                id: 7, 
+                cardTitle: "7. Cadastro do Veículo (1/2)", 
+                summary: "Clique no ícone de carro/chave para buscar o VIN/Chassi e preencha manualmente a placa para auto-completar os dados do CFC.", 
+                title: "Cadastrando o Veículo (Passo 1 de 2)", 
+                content: `
+                    <p>1. <strong>Busca VIN/Chassi:</strong> Clique no <strong>ícone verde (desenho do carro com a chave)</strong>, para que o sistema puxe automaticamente o VIN ou Chassi do veículo.</p>
+                    <img src="img/9.png" alt="Tela de cadastro com o ícone do carro destacado." />
+                    <p>2. <strong>Preenchimento CFC:</strong> Preencha manualmente a <strong>Placa do veículo</strong>. Em seguida, clique no <strong>ícone de duas setas (🔄)</strong> ao lado do campo da placa para preencher automaticamente os dados do CFC.</p>
+                    <img src="img/10.png" alt="Campos de placa e ícone de preenchimento automático de CFC." />
+                ` 
+            },
+            { 
+                id: 8, 
+                cardTitle: "8. Cadastro do Veículo (2/2)", 
+                summary: "Confira todos os dados, clique em CADASTRAR e confirme o Chassi/Placa para finalizar o processo.", 
+                title: "Cadastrando o Veículo (Passo 2 de 2) e Confirmação", 
+                content: `
+                    <p>1. Com o VIN e a placa preenchidos, confira os dados do CFC exibidos e clique em <strong>"CADASTRAR"</strong>.</p>
+                    <img src="img/11.png" alt="Tela de cadastro preenchida, botão Cadastrar." />
+                    <p>2. O sistema pedirá confirmação. **Confira o Chassi (17 dígitos) e a Placa** e clique em <strong>"SIM"</strong>.</p>
+                    <p>3. Ao ver a mensagem <strong>"Cadastro bem-sucedido"</strong>, clique em <strong>"OK"</strong>.</p>
+                    <img src="img/12.png" alt="Mensagem de confirmação de cadastro e tela de sucesso." />
+                ` 
+            },
+            { 
+                id: 9, 
+                cardTitle: "9. Finalização e Verificação", 
+                summary: "Deslogue do aplicativo e confirme o vínculo MAC do OBD e VIN do veículo no painel SuperPrático.", 
+                title: "Finalização: Deslogar e Verificar no SuperPrático", 
+                content: `
+                    <h3>Passos no Aplicativo:</h3>
+                    <p>1. Deslogue da sua conta clicando sobre o <strong>ícone de perfil</strong> (localizado na parte superior direita da tela) e confirme com <strong>"SIM"</strong> para deslogar.</p>
+                    <img src="img/13.png" alt="Ícone de perfil para deslogar e confirmação." />
+
+                    <h3>Confirmação no Painel SuperPrático:</h3>
+                    <p>1. No painel SuperPrático, localize o veículo pela placa e acesse seu perfil.</p>
+                    <p>2. Confirme se as informações do <strong>MAC DO OBD</strong> e do <strong>VIN</strong> estão preenchidas e se a <strong>VALIDAÇÃO OBD</strong> está definida como <strong>"Obrigatória"</strong>.</p>
+                    <img src="img/14.png" alt="Painel SuperPrático com informações de MAC e VIN." />
+                ` 
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cardGrid = document.getElementById('card-grid');
+            const modal = document.getElementById('step-modal');
+            const closeButton = document.querySelector('.close-button');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            // 1. Função para criar os cards e injetar no HTML
+            tutorialSteps.forEach(step => {
+                const card = document.createElement('div');
+                card.classList.add('step-card');
+                card.setAttribute('data-step-id', step.id);
+
+                card.innerHTML = `
+                    <div class="card-title">${step.cardTitle}</div>
+                    <p class="card-summary">${step.summary}</p>
+                `;
+
+                // Adiciona o evento de clique que abre o modal
+                card.addEventListener('click', () => {
+                    showModal(step);
+                });
+
+                cardGrid.appendChild(card);
+            });
+
+            // 2. Função para exibir o modal com o conteúdo da etapa
+            function showModal(step) {
+                modalTitle.textContent = step.title;
+                modalBody.innerHTML = step.content;
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Evita rolagem da página por trás
+            }
+
+            // 3. Função para fechar o modal
+            function closeModal() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restaura rolagem da página
+            }
+
+            // 4. Eventos para fechar o modal
+            closeButton.addEventListener('click', closeModal);
+
+            // Fechar ao clicar fora do modal (no overlay escuro)
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Fechar ao pressionar a tecla ESC
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
